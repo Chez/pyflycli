@@ -14,7 +14,7 @@ from typing import Any, Dict, List, NamedTuple
 from pyfly import DB_READ_ERROR, DB_WRITE_ERROR, JSON_ERROR, SUCCESS
 
 
-DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli_project/pyfly/default.json"
+DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 
 
 def get_database_path(config_file: Path) -> Path:

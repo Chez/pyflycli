@@ -35,8 +35,6 @@ class AsyncDatabase:
                 result = await session.execute(select(Response))
                 r = result.scalars().all()
                 print(r)
-                # stmt = select(A).options(selectinload(A.bs)
-                # result = await session.execute(stmt)
         
         # MUST dispose     
         await engine.dispose()
