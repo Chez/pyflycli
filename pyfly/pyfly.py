@@ -6,6 +6,10 @@ from typing import Any, Dict, List, NamedTuple
 from pyfly import DB_READ_ERROR, ID_ERROR
 from pyfly.database import DatabaseHandler
 
+from pyfly.database import AsyncDatabaseHandler
+
+
+asdb = AsyncDatabaseHandler()
 
 class CurrentTodo(NamedTuple):
     todo: Dict[str, Any]

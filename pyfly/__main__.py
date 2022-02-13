@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from sqlmodel import create_engine, SQLModel, Session, Field, select
 
+
 def main():
     print("starting main..")
     cli.app(prog_name=__app_name__)

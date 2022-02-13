@@ -8,9 +8,6 @@ import asyncio
 
 from pyfly import ERRORS, __app_name__, __version__, config, database, pyfly
 
-from .database import AsyncDatabaseHandler
-
-asdb = AsyncDatabaseHandler()
 
 app = typer.Typer()
 
@@ -39,8 +36,6 @@ def init(
         )
         raise typer.Exit(1)
     else:
-        print("move me to database file.\n\n")
-        asdb.run() # returns DetailedFlights from db. this is async function (asyncio.run(async_main()))
         typer.secho(f"The to-do database is {db_path}", fg=typer.colors.GREEN)
         
 # def get_todoer() -> rptodo.Todoer:
