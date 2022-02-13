@@ -41,7 +41,6 @@ class AsyncDatabaseHandler:
         )
 
     async def is_awake(self):
-        self.result = []
         session = self.get_async_session()
         result = await self.crud.get_one_response(session)
         return result.scalars().all()[0]
