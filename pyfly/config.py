@@ -4,19 +4,20 @@ from pathlib import Path
 
 import typer
 
-from pyfly import DB_WRITE_ERROR, DIR_ERROR, FILE_ERROR, SUCCESS, __app_name__
+from pyfly import DB_READ_ERROR, DB_WRITE_ERROR, DIR_ERROR, FILE_ERROR, SUCCESS, __app_name__
 
 CONFIG_DIR_PATH = Path(typer.get_app_dir(__app_name__))
 CONFIG_FILE_PATH = CONFIG_DIR_PATH / "config.ini"
 
 from pyfly.database import AsyncDatabaseHandler
 
+
 def init_app(db_path: str) -> int:
     """Initialize the application."""
     config_code = _init_config_file()
     if config_code != SUCCESS:
         return config_code
-    database_code = _create_database(db_path)
+    database_code = _init_database(db_path)
     if database_code != SUCCESS:
         return database_code
     return SUCCESS
@@ -32,15 +33,12 @@ def _init_config_file() -> int:
         return FILE_ERROR
     return SUCCESS
 
-def _create_database(db_path: str) -> int:
+def _init_database(db_path: str) -> int:
+    """
+    Gets one entry from Response table.
+    """
     try:
-        """
-        Gets one entry from results db.
-        """
         asdb = AsyncDatabaseHandler()
-        asdb.run()
+        return SUCCESS if asdb.run("ping_db") else DB_READ_ERROR
     except OSError:
-        return DB_WRITE_ERROR
-    return SUCCESS
-
-
+        return DB_READ_ERROR

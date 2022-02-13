@@ -10,7 +10,7 @@ __version__ = "0.1.0"
     DB_READ_ERROR,
     DB_WRITE_ERROR,
     JSON_ERROR,
-    ID_ERROR,
+    ID_ERROR
 ) = range(7)
 
 ERRORS = {

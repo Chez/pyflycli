@@ -26,34 +26,30 @@ class AsyncDatabaseHandler:
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo") -> None:
         self.uri = uri
         self.engine = create_async_engine(self.uri, echo=True)
-
-
-    async def create_tables(self):        
-        """
-        NOT BEING USED YET BC PULLING DATA FROM EXISTING FLIGHT DB. MIGHT NOT NEED THIS AT ALL ACTUALLY.
-        """
-        async with self.engine.begin() as conn:
-            await conn.run_sync(SQLModel.metadata.drop_all)
-            await conn.run_sync(SQLModel.metadata.create_all)
+        self.ops = {
+            "ping_db" : self.ping_db
+        }
+        self.result = []
     
-    async def async_main(self):
+    async def ping_db(self):
+        self.result = []
         async_session = sessionmaker(
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
 
         async with async_session() as session:
-            async with session.begin():
+            async with session.begin():         
                 result = await session.execute(select(Response))
-                r = result.scalars().all()
-                print(r)
-        
+                self.result.append(result.scalars().first())
+                
         # MUST dispose     
         await self.engine.dispose()
+        
+    def run(self, operation):
+        print(f"runninng {operation}")
+        asyncio.run(self.ops[operation]()) 
+        return bool(self.result)
 
-    def run(self):
-        print("running")
-        return asyncio.run(self.async_main()) 
-    
 
 def get_database_path(config_file: Path) -> Path:
     """Return the current path to the to-do database."""
