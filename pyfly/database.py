@@ -6,6 +6,8 @@ from sqlalchemy.orm import sessionmaker
 
 from sqlmodel import create_engine, SQLModel, Session, select
 
+import asyncio
+
 import configparser
 import json
 from pathlib import Path
@@ -13,6 +15,7 @@ from typing import Any, Dict, List, NamedTuple
 
 from pyfly import DB_READ_ERROR, DB_WRITE_ERROR, JSON_ERROR, SUCCESS
 
+from .fake_models import *
 
 DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 
@@ -58,37 +61,34 @@ class DatabaseHandler:
             return DBResponse(todo_list, SUCCESS)
         except OSError:  # Catch file IO problems
             return DBResponse(todo_list, DB_WRITE_ERROR)
-        
 
-
-# engine = create_async_engine(
-#     "postgresql+asyncpg://postgres:password@localhost/foo",
-#     echo=False,
-# )
-
-# def get_database_path() -> str:
-#     return os.environ["POSTGRES_URI_ASYNC"]
-
-# def create_db_and_tables():
-#     SQLModel.metadata.create_all(engine)
-
-# async def async_main(data):
-#     engine = create_async_engine(
-#         "postgresql+asyncpg://postgres:password@localhost/foo",
-#         echo=False,
-#     )
+class AsyncDatabaseHandler:
     
-#     # expire_on_commit=False will prevent attributes from being expired
-#     # after commit.
-#     async_session = sessionmaker(
-#         engine, expire_on_commit=True, class_=AsyncSession
-#     )
-#     async with async_session() as session:
-#         async with session.begin():
-#             # print(data["detailed"])
-#             """
-#             Data db entries here.
-#             """
-#             session.add(r1)
-            
-#         await session.commit()
+    async def async_main(self):
+        engine = create_async_engine(
+            "postgresql+asyncpg://postgres:password@localhost/foo",
+            echo=True,
+        )
+        print(engine)
+        # async with engine.begin() as conn:
+        #     await conn.run_sync(SQLModel.metadata.drop_all)
+        #     await conn.run_sync(SQLModel.metadata.create_all)
+
+        # expire_on_commit=False will prevent attributes from being expired
+        # after commit.
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+
+        async with async_session() as session:
+            async with session.begin():
+                result = await session.execute(select(Response))
+                r = result.scalars().all()
+                print(r)
+        
+        # MUST dispose     
+        await engine.dispose()
+
+    def run(self):
+        print("running")
+        return asyncio.run(self.async_main()) 
