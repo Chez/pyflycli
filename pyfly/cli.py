@@ -28,7 +28,7 @@ def init(
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
-    db_init_error = database.init_database(Path(db_path))
+    db_init_error = config.init_database(db_path)
     if db_init_error:
         typer.secho(
             f'Creating database failed with "{ERRORS[db_init_error]}"',
@@ -36,8 +36,9 @@ def init(
         )
         raise typer.Exit(1)
     else:
-        typer.secho(f"The to-do database is {db_path}", fg=typer.colors.GREEN)
-        
+        typer.secho("The PyFly database exists with entries.", fg=typer.colors.GREEN)
+        # typer.secho(f"First Response: {}", fg=typer.colors.GREEN)
+
 # def get_todoer() -> rptodo.Todoer:
 #     if config.CONFIG_FILE_PATH.exists():
 #         db_path = database.get_database_path(config.CONFIG_FILE_PATH)

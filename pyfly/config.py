@@ -17,9 +17,6 @@ def init_app(db_path: str) -> int:
     config_code = _init_config_file()
     if config_code != SUCCESS:
         return config_code
-    database_code = _init_database(db_path)
-    if database_code != SUCCESS:
-        return database_code
     return SUCCESS
 
 def _init_config_file() -> int:
@@ -33,12 +30,12 @@ def _init_config_file() -> int:
         return FILE_ERROR
     return SUCCESS
 
-def _init_database(db_path: str) -> int:
-    """
-    Gets one entry from Response table.
-    """
+def init_database(db_path: str) -> int:
+    """Initialize DB by getting one entry from Response table."""
     try:
         asdb = AsyncDatabaseHandler()
-        return SUCCESS if asdb.run("ping_db") else DB_READ_ERROR
+        if not asdb.run("get_response"):
+            return DB_READ_ERROR
+        return SUCCESS
     except OSError:
         return DB_READ_ERROR

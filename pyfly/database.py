@@ -1,45 +1,55 @@
 """This module provides the RP To-Do database functionality."""
 import os
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
-
-from sqlmodel import create_engine, SQLModel, Session, select
-
-import asyncio
-
-import configparser
 import json
 from pathlib import Path
 from typing import Any, Dict, List, NamedTuple
+import asyncio
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import select
 
 from pyfly import DB_READ_ERROR, DB_WRITE_ERROR, JSON_ERROR, SUCCESS
-
 from .fake_models import *
 
 
 DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 
 
+class CRUDer:
+    def __init__(self) -> None:
+        pass
+    
+    async def get_one_response(self, session):
+        return await session.execute(select(Response))
+                             
+    
 class AsyncDatabaseHandler:
     
-    def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo") -> None:
+    def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
         self.uri = uri
-        self.engine = create_async_engine(self.uri, echo=True)
+        self.engine = self.create_async_engine(self.uri, echo=True)
+        self.async_session = self.get_async_session()
         self.ops = {
-            "ping_db" : self.ping_db
+            "get_response" : self.get_response
         }
+        self.crud = crud
         self.result = []
-    
-    async def ping_db(self):
-        self.result = []
-        async_session = sessionmaker(
+        
+    def create_async_engine(self, uri, echo=True):
+        return create_async_engine(uri, echo=echo)
+        
+    def get_async_session(self):
+        return sessionmaker(
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
 
-        async with async_session() as session:
+    async def get_response(self):
+        self.result = []
+        async with self.async_session() as session:
             async with session.begin():         
-                result = await session.execute(select(Response))
+                result = await self.crud.get_one_response(session)
                 self.result.append(result.scalars().first())
                 
         # MUST dispose     
@@ -50,20 +60,6 @@ class AsyncDatabaseHandler:
         asyncio.run(self.ops[operation]()) 
         return bool(self.result)
 
-
-def get_database_path(config_file: Path) -> Path:
-    """Return the current path to the to-do database."""
-    config_parser = configparser.ConfigParser()
-    config_parser.read(config_file)
-    return Path(config_parser["General"]["database"])
-    
-def init_database(db_path: Path) -> int:
-    """Create the to-do database."""
-    try:
-        db_path.write_text("[]")  # Empty to-do list
-        return SUCCESS
-    except OSError:
-        return DB_WRITE_ERROR
 
 class DBResponse(NamedTuple):
     todo_list: List[Dict[str, Any]]
