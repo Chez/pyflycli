@@ -19,12 +19,18 @@ def init_app(db_path: str) -> int:
         return config_code
     return SUCCESS
 
-def _init_database(db_path: str) -> int:
+def _init_database() -> int:
     """Initialize DB by getting one entry from Response table."""
     try:
         asdb = AsyncDatabaseHandler()
-        if not asdb.run("get_response"):
-            return DB_READ_ERROR
-        return SUCCESS
+        try:
+            if not asdb.run("get_response"):
+                typer.secho(
+                f'Creating database failed with "{DB_READ_ERROR}"',
+                fg=typer.colors.RED,
+            )
+        except Exception as e:
+            raise typer.Exit(1) from e
     except OSError:
         return DB_READ_ERROR
+    return SUCCESS
