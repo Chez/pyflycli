@@ -21,16 +21,14 @@ def init_app(db_path: str) -> int:
 
 def _init_database() -> int:
     """Initialize DB by getting one entry from Response table."""
+    asdb = AsyncDatabaseHandler()
     try:
-        asdb = AsyncDatabaseHandler()
-        try:
-            if not asdb.run("get_response"):
-                typer.secho(
-                f'Creating database failed with "{DB_READ_ERROR}"',
+        response = asdb.run("get_response")
+        if not response:
+            typer.secho(
+                "Connection exists and tables have been created -- but database is empty",
                 fg=typer.colors.RED,
             )
-        except Exception as e:
-            raise typer.Exit(1) from e
     except OSError:
         return DB_READ_ERROR
     return SUCCESS
