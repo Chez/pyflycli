@@ -20,17 +20,17 @@ DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 class CRUDer:
     
     async def get_one_response(self, session):
-        return await session.execute(select(Response))
-                             
-    
+        res = []
+        async with session() as session:
+            async with session.begin():         
+                return await session.execute(select(Response))
+            
 class AsyncDatabaseHandler:
     
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
         self.uri = uri
-        self.engine = self.create_async_engine(self.uri, echo=True)
-        self.async_session = self.get_async_session()
         self.crud = crud
-        self.result = []
+        self.engine = self.create_async_engine(self.uri, echo=True)
         self.ops = {"is_awake" : self.is_awake}
         
     def create_async_engine(self, uri, echo=True):
@@ -43,18 +43,16 @@ class AsyncDatabaseHandler:
 
     async def is_awake(self):
         self.result = []
-        async with self.async_session() as session:
-            async with session.begin():         
-                result = await self.crud.get_one_response(session)
-                self.result.append(result.scalars().first())
-                
-        # MUST dispose     
-        await self.engine.dispose()
-        
+        session = self.get_async_session()
+        result = await self.crud.get_one_response(session)
+        result = result.scalars().all()[0]
+        print(result)
+        return result
+    
     def run(self, operation):
         print(f"runninng {operation}")
-        asyncio.run(self.ops[operation]()) 
-        return bool(self.result)
+        result = asyncio.run(self.ops[operation]()) # must return to variable!
+        return result
     
     
 # async def read_todos(self):
@@ -62,7 +60,8 @@ class AsyncDatabaseHandler:
 #         async with self.async_session() as session:
 #             async with session.begin(): 
 #                 try:
-#                     return session
+                    # result = await self.crud.get_one_response(session)
+                    # return result.scalars().first()
 #                 except json.JSONDecodeError:  # Catch wrong JSON format
 #                     return JSON_ERROR
 #     except Exception as e:  # Catch DB connection issue

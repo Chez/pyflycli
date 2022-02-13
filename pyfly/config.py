@@ -23,12 +23,16 @@ def _init_database() -> int:
     """Initialize DB by getting one entry from Response table."""
     asdb = AsyncDatabaseHandler()
     try:
-        db_awake = asdb.run("is_awake")
-        if not db_awake:
+        first = asdb.run("is_awake")
+        if not first:
             typer.secho(
                 "Connection exists and tables have been created -- but database is empty",
                 fg=typer.colors.RED,
             )
     except OSError:
         return DB_READ_ERROR
+    typer.secho(
+        f"Response #1: {first.dict()}",
+        fg=typer.colors.BLUE,
+    )
     return SUCCESS
