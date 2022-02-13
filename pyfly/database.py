@@ -64,20 +64,21 @@ class DatabaseHandler:
 
 class AsyncDatabaseHandler:
     
-    async def async_main(self):
-        engine = create_async_engine(
-            "postgresql+asyncpg://postgres:password@localhost/foo",
-            echo=True,
-        )
-        print(engine)
-        # async with engine.begin() as conn:
-        #     await conn.run_sync(SQLModel.metadata.drop_all)
-        #     await conn.run_sync(SQLModel.metadata.create_all)
+    def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo") -> None:
+        self.uri = uri
+        self.engine = create_async_engine(self.uri, echo=True)
 
+
+    async def create_tables(self):        
+        async with self.engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.drop_all)
+            await conn.run_sync(SQLModel.metadata.create_all)
+    
+    async def async_main(self):
         # expire_on_commit=False will prevent attributes from being expired
         # after commit.
         async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
+            self.engine, expire_on_commit=False, class_=AsyncSession
         )
 
         async with async_session() as session:
@@ -87,7 +88,7 @@ class AsyncDatabaseHandler:
                 print(r)
         
         # MUST dispose     
-        await engine.dispose()
+        await self.engine.dispose()
 
     def run(self):
         print("running")
