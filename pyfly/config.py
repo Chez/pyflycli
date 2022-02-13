@@ -34,6 +34,9 @@ def _init_config_file() -> int:
 
 def _create_database(db_path: str) -> int:
     try:
+        """
+        Gets one entry from results db.
+        """
         asdb = AsyncDatabaseHandler()
         asdb.run()
     except OSError:

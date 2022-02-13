@@ -29,13 +29,14 @@ class AsyncDatabaseHandler:
 
 
     async def create_tables(self):        
+        """
+        NOT BEING USED YET BC PULLING DATA FROM EXISTING FLIGHT DB. MIGHT NOT NEED THIS AT ALL ACTUALLY.
+        """
         async with self.engine.begin() as conn:
             await conn.run_sync(SQLModel.metadata.drop_all)
             await conn.run_sync(SQLModel.metadata.create_all)
     
     async def async_main(self):
-        # expire_on_commit=False will prevent attributes from being expired
-        # after commit.
         async_session = sessionmaker(
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
