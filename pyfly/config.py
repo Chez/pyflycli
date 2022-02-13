@@ -14,23 +14,12 @@ from pyfly.database import AsyncDatabaseHandler
 
 def init_app(db_path: str) -> int:
     """Initialize the application."""
-    config_code = _init_config_file()
+    config_code = _init_database()
     if config_code != SUCCESS:
         return config_code
     return SUCCESS
 
-def _init_config_file() -> int:
-    try:
-        CONFIG_DIR_PATH.mkdir(exist_ok=True)
-    except OSError:
-        return DIR_ERROR
-    try:
-        CONFIG_FILE_PATH.touch(exist_ok=True)
-    except OSError:
-        return FILE_ERROR
-    return SUCCESS
-
-def init_database(db_path: str) -> int:
+def _init_database(db_path: str) -> int:
     """Initialize DB by getting one entry from Response table."""
     try:
         asdb = AsyncDatabaseHandler()

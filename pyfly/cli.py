@@ -20,24 +20,16 @@ def init(
         prompt="to-do database location?",
     ),
 ) -> None:  # sourcery skip: use-named-expression
-    """Initialize the to-do database."""
+    """Initialize the Pyfly database."""
     app_init_error = config.init_app(db_path)
     if app_init_error:
         typer.secho(
-            f'Creating config file failed with "{ERRORS[app_init_error]}"',
-            fg=typer.colors.RED,
-        )
-        raise typer.Exit(1)
-    db_init_error = config.init_database(db_path)
-    if db_init_error:
-        typer.secho(
-            f'Creating database failed with "{ERRORS[db_init_error]}"',
+            f'Creating database failed with "{ERRORS[app_init_error]}"',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
     else:
         typer.secho("The PyFly database exists with entries.", fg=typer.colors.GREEN)
-        # typer.secho(f"First Response: {}", fg=typer.colors.GREEN)
 
 # def get_todoer() -> rptodo.Todoer:
 #     if config.CONFIG_FILE_PATH.exists():
