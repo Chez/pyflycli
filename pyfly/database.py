@@ -20,7 +20,6 @@ DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 class CRUDer:
     
     async def get_one_response(self, session):
-        res = []
         async with session() as session:
             async with session.begin():         
                 return await session.execute(select(Response))
