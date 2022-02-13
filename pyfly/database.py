@@ -44,10 +44,8 @@ class AsyncDatabaseHandler:
         self.result = []
         session = self.get_async_session()
         result = await self.crud.get_one_response(session)
-        result = result.scalars().all()[0]
-        print(result)
-        return result
-    
+        return result.scalars().all()[0]
+
     def run(self, operation):
         print(f"runninng {operation}")
         result = asyncio.run(self.ops[operation]()) # must return to variable!
