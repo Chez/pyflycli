@@ -1,4 +1,6 @@
 """This module provides the RP To-Do config functionality."""
+import asyncio 
+
 import sqlmodel
 from sqlmodel import create_engine, SQLModel, Session, select
 import datetime
@@ -12,17 +14,12 @@ from pathlib import Path
 
 import typer
 
-import asyncio 
-
-
 from pyfly import DB_WRITE_ERROR, DIR_ERROR, FILE_ERROR, SUCCESS, __app_name__
-
-from pyfly.database import AsyncDatabaseHandler
-
 
 CONFIG_DIR_PATH = Path(typer.get_app_dir(__app_name__))
 CONFIG_FILE_PATH = CONFIG_DIR_PATH / "config.ini"
 
+from pyfly.database import AsyncDatabaseHandler
 
 def init_app(db_path: str) -> int:
     """Initialize the application."""

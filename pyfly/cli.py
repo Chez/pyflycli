@@ -19,7 +19,7 @@ def init(
         "-db",
         prompt="to-do database location?",
     ),
-) -> None:
+) -> None:  # sourcery skip: use-named-expression
     """Initialize the to-do database."""
     app_init_error = config.init_app(db_path)
     if app_init_error:
