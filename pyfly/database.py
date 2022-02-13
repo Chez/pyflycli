@@ -18,8 +18,6 @@ DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 
 
 class CRUDer:
-    def __init__(self) -> None:
-        pass
     
     async def get_one_response(self, session):
         return await session.execute(select(Response))
@@ -31,11 +29,9 @@ class AsyncDatabaseHandler:
         self.uri = uri
         self.engine = self.create_async_engine(self.uri, echo=True)
         self.async_session = self.get_async_session()
-        self.ops = {
-            "get_response" : self.get_response
-        }
         self.crud = crud
         self.result = []
+        self.ops = {"is_awake" : self.is_awake}
         
     def create_async_engine(self, uri, echo=True):
         return create_async_engine(uri, echo=echo)
@@ -45,7 +41,7 @@ class AsyncDatabaseHandler:
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
 
-    async def get_response(self):
+    async def is_awake(self):
         self.result = []
         async with self.async_session() as session:
             async with session.begin():         
@@ -59,31 +55,37 @@ class AsyncDatabaseHandler:
         print(f"runninng {operation}")
         asyncio.run(self.ops[operation]()) 
         return bool(self.result)
-
-
-class DBResponse(NamedTuple):
-    todo_list: List[Dict[str, Any]]
-    error: int
-
     
-class DatabaseHandler:
-    def __init__(self, db_path: Path) -> None:
-        self._db_path = db_path
+    
+# async def read_todos(self):
+#     try:
+#         async with self.async_session() as session:
+#             async with session.begin(): 
+#                 try:
+#                     return session
+#                 except json.JSONDecodeError:  # Catch wrong JSON format
+#                     return JSON_ERROR
+#     except Exception as e:  # Catch DB connection issue
+#         raise DB_READ_ERROR from e
 
-    def read_todos(self) -> DBResponse:
-        try:
-            with self._db_path.open("r") as db:
-                try:
-                    return DBResponse(json.load(db), SUCCESS)
-                except json.JSONDecodeError:  # Catch wrong JSON format
-                    return DBResponse([], JSON_ERROR)
-        except OSError:  # Catch file IO problems
-            return DBResponse([], DB_READ_ERROR)
+# class DatabaseHandler:
+#     def __init__(self, db_path: Path) -> None:
+#         self._db_path = db_path
 
-    def write_todos(self, todo_list: List[Dict[str, Any]]) -> DBResponse:
-        try:
-            with self._db_path.open("w") as db:
-                json.dump(todo_list, db, indent=4)
-            return DBResponse(todo_list, SUCCESS)
-        except OSError:  # Catch file IO problems
-            return DBResponse(todo_list, DB_WRITE_ERROR)
+#     def read_todos(self) -> DBResponse:
+#         try:
+#             with self._db_path.open("r") as db:
+#                 try:
+#                     return DBResponse(json.load(db), SUCCESS)
+#                 except json.JSONDecodeError:  # Catch wrong JSON format
+#                     return DBResponse([], JSON_ERROR)
+#         except OSError:  # Catch file IO problems
+#             return DBResponse([], DB_READ_ERROR)
+
+#     def write_todos(self, todo_list: List[Dict[str, Any]]) -> DBResponse:
+#         try:
+#             with self._db_path.open("w") as db:
+#                 json.dump(todo_list, db, indent=4)
+#             return DBResponse(todo_list, SUCCESS)
+#         except OSError:  # Catch file IO problems
+#             return DBResponse(todo_list, DB_WRITE_ERROR)

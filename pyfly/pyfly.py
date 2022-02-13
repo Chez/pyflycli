@@ -1,15 +1,28 @@
 """This module provides the RP To-Do model-controller."""
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import select
 
 from pathlib import Path
 from typing import Any, Dict, List, NamedTuple
 
 from pyfly import DB_READ_ERROR, ID_ERROR
-from pyfly.database import DatabaseHandler
 
 from pyfly.database import AsyncDatabaseHandler
 
+from .fake_models import *
 
 asdb = AsyncDatabaseHandler()
+
+
+class CRUDer:
+    def __init__(self) -> None:
+        pass
+    
+    async def get_one_response(self, session):
+        return await session.execute(select(Response))
+
 
 class CurrentTodo(NamedTuple):
     todo: Dict[str, Any]
