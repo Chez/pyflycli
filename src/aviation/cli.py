@@ -67,15 +67,15 @@ def list_all() -> None:
     console.print("\n[bold magenta]Flights[/bold magenta]!", "✈")
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("id", style="dim", width=6)
+    table.add_column("response_id", style="dim", width=6)
     table.add_column("identification", min_width=6)
     table.add_column("airplane_name", min_width=20)
-    table.add_column("airplane_code", min_width=6)
-    table.add_column("response_id", min_width=6, justify="right")
+    table.add_column("airplane_code", min_width=6, justify="right")
 
     limit = 10
     for flight in all_flights[::-1][:limit]:
         c = "white"
-        table.add_row(str(flight.id), f'[{c}]{flight.identification}[/{c}]', f'[{c}]{flight.airline_name}[/{c}]',  f'[{c}]{flight.airplane_code}[/{c}]',  f'[{c}]{flight.response_id}[/{c}]') 
+        table.add_row(str(flight.id), f'[{c}]{flight.response_id}[/{c}]', f'[{c}]{flight.identification}[/{c}]', f'[{c}]{flight.airline_name}[/{c}]',  f'[{c}]{flight.airplane_code}[/{c}]') 
         
     console.print(table)
 
