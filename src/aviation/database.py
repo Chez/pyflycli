@@ -34,10 +34,6 @@ class AsyncDatabaseHandler:
         self.uri = uri
         self.crud = crud
         self.engine = self.create_async_engine(self.uri, echo=False)
-        self.ops = {
-                "is_awake" : self.is_awake,
-                "get_all_responses" : self.get_all_responses    
-            }
         
     def create_async_engine(self, uri, echo=True):
         return create_async_engine(uri, echo=echo)
