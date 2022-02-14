@@ -55,14 +55,15 @@ def list_all() -> None:
     table.add_column("Time Aquired", min_width=20)
     table.add_column("Most Recent", min_width=12, justify="right")
     
-    def get_color(response_id):
+    def get_color(response_id, last):
         COLORS = {'most_recent': 'green', 'previous': 'white'}
-        return COLORS["most_recent"] if response_id == 1 else COLORS["previous"]
+        return COLORS["most_recent"] if response_id == last.id else COLORS["previous"]
     
     limit = 10
-    for response in all_responses[:limit]:
-        c = get_color(response.id)
-        is_done_str = '✅' if response.id == 1 else '❌'
+    for response in all_responses[::-1][:limit]:
+        last = all_responses[-1]
+        c = get_color(response.id, last)
+        is_done_str = '✅' if response.id == last.id else '❌'
         table.add_row(str(response.id), f'[{c}]{response.time_created}[/{c}]', is_done_str) 
 
     console.print(table)
