@@ -34,7 +34,7 @@ class AsyncDatabaseHandler:
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
         self.uri = uri
         self.crud = crud
-        self.engine = self.create_async_engine(self.uri, echo=True)
+        self.engine = self.create_async_engine(self.uri, echo=False)
         self.ops = {
                 "is_awake" : self.is_awake,
                 "get_all_responses" : self.get_all_responses    
