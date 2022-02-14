@@ -9,9 +9,13 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import select
 
+# https://github.com/tiangolo/sqlmodel/issues/189
+from sqlmodel.sql.expression import Select, SelectOfScalar
+SelectOfScalar.inherit_cache = True  # type: ignore
+Select.inherit_cache = True  # type: ignore
+
 from aviation.fake_models import *
 from aviation.errors import *
-
 
 DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 
@@ -27,7 +31,6 @@ class CRUDer:
         async with session() as session:
             async with session.begin():
                 return await session.execute(select(Response))
-
 class AsyncDatabaseHandler:
     
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:

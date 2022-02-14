@@ -3,10 +3,14 @@ from typing import List, Optional
 
 import typer
 
+from rich.console import Console
+from rich.table import Table
+
 from aviation.errors import *
 from aviation.config import *
 from aviation.database import *
 
+console = Console()
 
 app = typer.Typer()
 
@@ -42,7 +46,19 @@ def list_all() -> None:
             "There are no Response in the DB yet", fg=typer.colors.RED
         )
         raise typer.Exit()
-    typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
+    
+    console.print("[bold magenta]Todos[/bold magenta]!", "💻")
+
+    table = Table(show_header=True, header_style="bold blue")
+    table.add_column("#", style="dim", width=6)
+    table.add_column("Todo", min_width=20)
+    table.add_column("Category", min_width=12, justify="right")
+    table.add_column("Done", min_width=12, justify="right")
+    
+    
+    console.print(table)
+
+    # typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
     # columns = (
     #     "ID.  ",
     #     "| Priority  ",

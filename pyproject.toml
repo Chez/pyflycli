@@ -11,6 +11,7 @@ SQLAlchemy = "^1.4.31"
 sqlmodel = "^0.0.6"
 asyncpg = "^0.25.0"
 mypy = "^0.931"
+rich = "^11.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
