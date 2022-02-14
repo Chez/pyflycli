@@ -21,5 +21,10 @@ $ poetry shell
 $ poetry run pyfly init
 ```
 
+4. List Responses
+```sh 
+$ poetry run pyfly list
+```
+
 ## Example Image
 ![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/demo.png)
