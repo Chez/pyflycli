@@ -4,8 +4,8 @@ import typer
 from pathlib import Path
 
 from aviation.database import AsyncDatabaseHandler
-
 from aviation.errors import *
+
 
 def init_app(db_path: str) -> int:
     """Initialize the application."""
