@@ -31,6 +31,12 @@ class CRUDer:
         async with session() as session:
             async with session.begin():
                 return await session.execute(select(Response))
+            
+    async def get_all_flights(self, session):
+        async with session() as session:
+            async with session.begin():
+                return await session.execute(select(DetailedFlight))
+            
 class AsyncDatabaseHandler:
     
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
@@ -58,7 +64,14 @@ class AsyncDatabaseHandler:
         responses = result.scalars().all()
         await self.engine.dispose()
         return responses
-
+    
+    async def get_all_flights(self):
+        session = self.get_async_session()
+        result = await self.crud.get_all_flights(session)
+        flights = result.scalars().all()
+        await self.engine.dispose()
+        return flights
+    
     def run(self, operation):
         print(f"runninng {operation}")
         result = asyncio.run(getattr(self, operation)())# must return to variable!
