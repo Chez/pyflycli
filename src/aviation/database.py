@@ -62,7 +62,7 @@ class AsyncDatabaseHandler:
 
     def run(self, operation):
         print(f"runninng {operation}")
-        result = asyncio.run(self.ops[operation]()) # must return to variable!
+        result = asyncio.run(getattr(self, operation)())# must return to variable!
         return result
     
     
