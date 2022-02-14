@@ -25,8 +25,8 @@ def _init_database() -> int:
     asdb = AsyncDatabaseHandler()
     try:
         first = asdb.run("is_awake")
-        all_r = asyncio.run(asdb.get_all_responses())
-        print(f"all r: {all_r}")
+        all_responses = asdb.run("get_all_responses") # or asyncio.run(asdb.get_all_responses())
+        print(f"all_responses: {all_responses}")
         if not first:
             typer.secho(
                 "Connection exists and tables have been created -- but database is empty",
@@ -35,7 +35,7 @@ def _init_database() -> int:
     except OSError:
         return DB_READ_ERROR
     typer.secho(
-        f"Response #1: {first.dict()}",
+        f"Response #1: {all_responses[0].dict()}",
         fg=typer.colors.BLUE,
     )
     return SUCCESS

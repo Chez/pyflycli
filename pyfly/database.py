@@ -59,8 +59,7 @@ class AsyncDatabaseHandler:
         result = await self.crud.get_all_responses(session)
         responses = result.scalars().all()
         await self.engine.dispose()
-        return responses[0]
-        # return ([Response(time_created=response.time_created, id=response.id) for response in responses])
+        return responses
 
     def run(self, operation):
         print(f"runninng {operation}")
