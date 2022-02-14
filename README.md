@@ -17,7 +17,8 @@ $ poetry shell
 
 3. Initialize the application
 
-```sh $ poetry run pyfly init
+```sh 
+$ poetry run pyfly init
 ```
 
 ## Example Image
