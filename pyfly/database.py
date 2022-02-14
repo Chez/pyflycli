@@ -52,7 +52,7 @@ class AsyncDatabaseHandler:
         session = self.get_async_session()
         result = await self.crud.get_one_response(session)
         await self.engine.dispose()
-        return result.scalars().all()[0]
+        return SUCCESS if result.scalars().all()[0] else DB_READ_ERROR
     
     async def get_all_responses(self):
         session = self.get_async_session()
@@ -67,36 +67,3 @@ class AsyncDatabaseHandler:
         return result
     
     
-# async def read_todos(self):
-#     try:
-#         async with self.async_session() as session:
-#             async with session.begin(): 
-#                 try:
-                    # result = await self.crud.get_one_response(session)
-                    # return result.scalars().first()
-#                 except json.JSONDecodeError:  # Catch wrong JSON format
-#                     return JSON_ERROR
-#     except Exception as e:  # Catch DB connection issue
-#         raise DB_READ_ERROR from e
-
-# class DatabaseHandler:
-#     def __init__(self, db_path: Path) -> None:
-#         self._db_path = db_path
-
-#     def read_todos(self) -> DBResponse:
-#         try:
-#             with self._db_path.open("r") as db:
-#                 try:
-#                     return DBResponse(json.load(db), SUCCESS)
-#                 except json.JSONDecodeError:  # Catch wrong JSON format
-#                     return DBResponse([], JSON_ERROR)
-#         except OSError:  # Catch file IO problems
-#             return DBResponse([], DB_READ_ERROR)
-
-#     def write_todos(self, todo_list: List[Dict[str, Any]]) -> DBResponse:
-#         try:
-#             with self._db_path.open("w") as db:
-#                 json.dump(todo_list, db, indent=4)
-#             return DBResponse(todo_list, SUCCESS)
-#         except OSError:  # Catch file IO problems
-#             return DBResponse(todo_list, DB_WRITE_ERROR)

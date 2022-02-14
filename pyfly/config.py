@@ -24,8 +24,27 @@ def _init_database() -> int:
     """Initialize DB by getting one entry from Response table."""
     asdb = AsyncDatabaseHandler()
     try:
-        asdb.run("is_awake")
-        asdb.run("get_all_responses")
+        is_awake = asdb.run("is_awake")
+        responses = asdb.run("get_all_responses")
+        if is_awake:
+            typer.secho(
+                f'Creating database failed with "',
+                fg=typer.colors.RED,
+            )
+            raise typer.Exit(1)
+        else:
+            typer.secho("The PyFly database exists with entries.", fg=typer.colors.GREEN)
+        print(f"total responses: {len(responses)}")
     except OSError:
         return DB_READ_ERROR
     return SUCCESS
+
+# app_init_error = config.init_app(db_path)
+# if app_init_error:
+#     typer.secho(
+#         f'Creating database failed with "{ERRORS[app_init_error]}"',
+#         fg=typer.colors.RED,
+#     )
+#     raise typer.Exit(1)
+# else:
+#     typer.secho("The PyFly database exists with entries.", fg=typer.colors.GREEN)
