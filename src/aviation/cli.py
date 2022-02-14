@@ -7,6 +7,7 @@ from aviation.errors import *
 from aviation.config import *
 from aviation.database import *
 
+
 app = typer.Typer()
 
 
@@ -19,7 +20,7 @@ def init(
         prompt="to-do database location?",
     ),
 ) -> None:  # sourcery skip: use-named-expression
-    """Initialize the Pyfly database."""
+    """Initialize the Pyfly app."""
     app_init_error = init_app(db_path)
     if app_init_error:
         typer.secho(
@@ -30,52 +31,68 @@ def init(
     else:
         typer.secho("[INFO] Application initialized.", fg=typer.colors.GREEN)
 
-# def get_todoer() -> rptodo.Todoer:
-#     if config.CONFIG_FILE_PATH.exists():
-#         db_path = database.get_database_path(config.CONFIG_FILE_PATH)
-#     else:
-#         typer.secho(
-#             'Config file not found. Please, run "rptodo init"',
-#             fg=typer.colors.RED,
-#         )
-#         raise typer.Exit(1)
-#     if db_path.exists():
-#         return rptodo.Todoer(db_path)
-#     else:
-#         typer.secho(
-#             'Database not found. Please, run "rptodo init"',
-#             fg=typer.colors.RED,
-#         )
-#         raise typer.Exit(1)
 
 @app.command(name="list")
 def list_all() -> None:
     """List all to-dos."""
-    todoer = get_todoer()
-    todo_list = todoer.get_todo_list()
-    if len(todo_list) == 0:
+    handler =  AsyncDatabaseHandler()
+    all_responses = handler.run("get_all_responses")
+    if len(all_responses) == 0:
         typer.secho(
-            "There are no tasks in the to-do list yet", fg=typer.colors.RED
+            "There are no Response in the DB yet", fg=typer.colors.RED
         )
         raise typer.Exit()
     typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
-    columns = (
-        "ID.  ",
-        "| Priority  ",
-        "| Done  ",
-        "| Description  ",
-    )
-    headers = "".join(columns)
-    typer.secho(headers, fg=typer.colors.BLUE, bold=True)
-    typer.secho("-" * len(headers), fg=typer.colors.BLUE)
-    for id, todo in enumerate(todo_list, 1):
-        desc, priority, done = todo.values()
-        typer.secho(
-            f"{id}{(len(columns[0]) - len(str(id))) * ' '}"
-            f"| ({priority}){(len(columns[1]) - len(str(priority)) - 4) * ' '}"
-            f"| {done}{(len(columns[2]) - len(str(done)) - 2) * ' '}"
-            f"| {desc}",
-            fg=typer.colors.BLUE,
-        )
-    typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
+    # columns = (
+    #     "ID.  ",
+    #     "| Priority  ",
+    #     "| Done  ",
+    #     "| Description  ",
+    # )
+    # headers = "".join(columns)
+    # typer.secho(headers, fg=typer.colors.BLUE, bold=True)
+    # typer.secho("-" * len(headers), fg=typer.colors.BLUE)
+    # for id, todo in enumerate(todo_list, 1):
+    #     desc, priority, done = todo.values()
+    #     typer.secho(
+    #         f"{id}{(len(columns[0]) - len(str(id))) * ' '}"
+    #         f"| ({priority}){(len(columns[1]) - len(str(priority)) - 4) * ' '}"
+    #         f"| {done}{(len(columns[2]) - len(str(done)) - 2) * ' '}"
+    #         f"| {desc}",
+    #         fg=typer.colors.BLUE,
+    #     )
+    # typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
+
+
+
+# @app.command(name="list")
+# def list_all() -> None:
+#     """List all to-dos."""
+#     todoer = get_todoer()
+#     todo_list = todoer.get_todo_list()
+#     if len(todo_list) == 0:
+#         typer.secho(
+#             "There are no tasks in the to-do list yet", fg=typer.colors.RED
+#         )
+#         raise typer.Exit()
+#     typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
+#     columns = (
+#         "ID.  ",
+#         "| Priority  ",
+#         "| Done  ",
+#         "| Description  ",
+#     )
+#     headers = "".join(columns)
+#     typer.secho(headers, fg=typer.colors.BLUE, bold=True)
+#     typer.secho("-" * len(headers), fg=typer.colors.BLUE)
+#     for id, todo in enumerate(todo_list, 1):
+#         desc, priority, done = todo.values()
+#         typer.secho(
+#             f"{id}{(len(columns[0]) - len(str(id))) * ' '}"
+#             f"| ({priority}){(len(columns[1]) - len(str(priority)) - 4) * ' '}"
+#             f"| {done}{(len(columns[2]) - len(str(done)) - 2) * ' '}"
+#             f"| {desc}",
+#             fg=typer.colors.BLUE,
+#         )
+#     typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
 
