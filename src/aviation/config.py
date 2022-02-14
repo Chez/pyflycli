@@ -3,14 +3,25 @@ import typer
 
 from pathlib import Path
 
-from pyfly import DB_READ_ERROR, DB_WRITE_ERROR, DIR_ERROR, FILE_ERROR, SUCCESS, __app_name__
+from database import AsyncDatabaseHandler
 
-from .database import AsyncDatabaseHandler
+(
+    SUCCESS,
+    DIR_ERROR,
+    FILE_ERROR,
+    DB_READ_ERROR,
+    DB_WRITE_ERROR,
+    JSON_ERROR,
+    ID_ERROR
+) = range(7)
 
-CONFIG_DIR_PATH = Path(typer.get_app_dir(__app_name__))
-CONFIG_FILE_PATH = CONFIG_DIR_PATH / "config.ini"
-
-
+ERRORS = {
+    DIR_ERROR: "config directory error",
+    FILE_ERROR: "config file error",
+    DB_READ_ERROR: "database read error",
+    DB_WRITE_ERROR: "database write error",
+    ID_ERROR: "to-do id error",
+}
 
 def init_app(db_path: str) -> int:
     """Initialize the application."""

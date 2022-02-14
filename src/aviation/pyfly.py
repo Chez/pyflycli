@@ -6,25 +6,26 @@ from typing import List, Optional
 import typer
 import asyncio
 
-from pyfly import ERRORS, __app_name__, __version__, config, database, pyfly
-
+# from pyfly import config, database
+from config import *
+from database import *
 
 app = typer.Typer()
 
 @app.command()
 def init(
     db_path: str = typer.Option(
-        str(database.DEFAULT_DB_FILE_PATH),
+        str(DEFAULT_DB_FILE_PATH),
         "--db-path",
         "-db",
         prompt="to-do database location?",
     ),
 ) -> None:  # sourcery skip: use-named-expression
     """Initialize the Pyfly database."""
-    app_init_error = config.init_app(db_path)
+    app_init_error = init_app(db_path)
     if app_init_error:
         typer.secho(
-            f'[INFO] Creating app failed with "{ERRORS[app_init_error]}"',
+            f'[INFO] Creating app failed with "DB_READ_ERROR"',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
