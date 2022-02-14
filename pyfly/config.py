@@ -1,14 +1,15 @@
 """This module provides the  PyFly config functionality."""
-from pathlib import Path
-
 import typer
 
+from pathlib import Path
+
 from pyfly import DB_READ_ERROR, DB_WRITE_ERROR, DIR_ERROR, FILE_ERROR, SUCCESS, __app_name__
+
+from .database import AsyncDatabaseHandler
 
 CONFIG_DIR_PATH = Path(typer.get_app_dir(__app_name__))
 CONFIG_FILE_PATH = CONFIG_DIR_PATH / "config.ini"
 
-from pyfly.database import AsyncDatabaseHandler
 
 
 def init_app(db_path: str) -> int:

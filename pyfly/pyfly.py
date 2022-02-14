@@ -1,79 +1,100 @@
-"""This module provides the RP To-Do model-controller."""
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import select
+"""This module provides the Pyfly CLI."""
 
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple
+from typing import List, Optional
 
-from pyfly import DB_READ_ERROR, ID_ERROR
+import typer
+import asyncio
 
-from pyfly.database import AsyncDatabaseHandler
-
-from .fake_models import *
-
-asdb = AsyncDatabaseHandler()
+from pyfly import ERRORS, __app_name__, __version__, config, database, pyfly
 
 
-class CurrentTodo(NamedTuple):
-    todo: Dict[str, Any]
-    error: int
+app = typer.Typer()
+
+@app.command()
+def init(
+    db_path: str = typer.Option(
+        str(database.DEFAULT_DB_FILE_PATH),
+        "--db-path",
+        "-db",
+        prompt="to-do database location?",
+    ),
+) -> None:  # sourcery skip: use-named-expression
+    """Initialize the Pyfly database."""
+    app_init_error = config.init_app(db_path)
+    if app_init_error:
+        typer.secho(
+            f'[INFO] Creating app failed with "{ERRORS[app_init_error]}"',
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(1)
+    else:
+        typer.secho("[INFO] Application initialized.", fg=typer.colors.GREEN)
+
+# def get_todoer() -> rptodo.Todoer:
+#     if config.CONFIG_FILE_PATH.exists():
+#         db_path = database.get_database_path(config.CONFIG_FILE_PATH)
+#     else:
+#         typer.secho(
+#             'Config file not found. Please, run "rptodo init"',
+#             fg=typer.colors.RED,
+#         )
+#         raise typer.Exit(1)
+#     if db_path.exists():
+#         return rptodo.Todoer(db_path)
+#     else:
+#         typer.secho(
+#             'Database not found. Please, run "rptodo init"',
+#             fg=typer.colors.RED,
+#         )
+#         raise typer.Exit(1)
+
+@app.command(name="list")
+def list_all() -> None:
+    """List all to-dos."""
+    todoer = get_todoer()
+    todo_list = todoer.get_todo_list()
+    if len(todo_list) == 0:
+        typer.secho(
+            "There are no tasks in the to-do list yet", fg=typer.colors.RED
+        )
+        raise typer.Exit()
+    typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
+    columns = (
+        "ID.  ",
+        "| Priority  ",
+        "| Done  ",
+        "| Description  ",
+    )
+    headers = "".join(columns)
+    typer.secho(headers, fg=typer.colors.BLUE, bold=True)
+    typer.secho("-" * len(headers), fg=typer.colors.BLUE)
+    for id, todo in enumerate(todo_list, 1):
+        desc, priority, done = todo.values()
+        typer.secho(
+            f"{id}{(len(columns[0]) - len(str(id))) * ' '}"
+            f"| ({priority}){(len(columns[1]) - len(str(priority)) - 4) * ' '}"
+            f"| {done}{(len(columns[2]) - len(str(done)) - 2) * ' '}"
+            f"| {desc}",
+            fg=typer.colors.BLUE,
+        )
+    typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
+
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(f"{__app_name__} v{__version__}")
+        raise typer.Exit()
 
 
-class Todoer:
-    def __init__(self, db_path: Path) -> None:
-        self._db_handler = DatabaseHandler(db_path)
-
-    def add(self, description: List[str], priority: int = 2) -> CurrentTodo:
-        """Add a new to-do to the database."""
-        description_text = " ".join(description)
-        if not description_text.endswith("."):
-            description_text += "."
-        todo = {
-            "Description": description_text,
-            "Priority": priority,
-            "Done": False,
-        }
-        read = self._db_handler.read_todos()
-        # if read.error == DB_READ_ERROR:
-        if read.error == "DB_READ_ERROR":
-            return CurrentTodo(todo, read.error)
-        read.todo_list.append(todo)
-        write = self._db_handler.write_todos(read.todo_list)
-        return CurrentTodo(todo, write.error)
-
-    def get_todo_list(self) -> List[Dict[str, Any]]:
-        """Return the current to-do list."""
-        read = self._db_handler.read_todos()
-        return read.todo_list
-
-    def set_done(self, todo_id: int) -> CurrentTodo:
-        """Set a to-do as done."""
-        read = self._db_handler.read_todos()
-        if read.error:
-            return CurrentTodo({}, read.error)
-        try:
-            todo = read.todo_list[todo_id - 1]
-        except IndexError:
-            return CurrentTodo({}, ID_ERROR)
-        todo["Done"] = True
-        write = self._db_handler.write_todos(read.todo_list)
-        return CurrentTodo(todo, write.error)
-
-    def remove(self, todo_id: int) -> CurrentTodo:
-        """Remove a to-do from the database using its id or index."""
-        read = self._db_handler.read_todos()
-        if read.error:
-            return CurrentTodo({}, read.error)
-        try:
-            todo = read.todo_list.pop(todo_id - 1)
-        except IndexError:
-            return CurrentTodo({}, ID_ERROR)
-        write = self._db_handler.write_todos(read.todo_list)
-        return CurrentTodo(todo, write.error)
-
-    def remove_all(self) -> CurrentTodo:
-        """Remove all to-dos from the database."""
-        write = self._db_handler.write_todos([])
-        return CurrentTodo({}, write.error)
+@app.callback()
+def main(
+    version: Optional[bool] = typer.Option(
+        None,
+        "--version",
+        "-v",
+        help="Show the application's version and exit.",
+        callback=_version_callback,
+        is_eager=True,
+    )
+) -> None:
+    return
