@@ -75,7 +75,7 @@ python-versions = ">=3.5"
 name = "mypy"
 version = "0.931"
 description = "Optional static typing for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -92,7 +92,7 @@ python2 = ["typed-ast (>=1.4.0,<2)"]
 name = "mypy-extensions"
 version = "0.4.3"
 description = "Experimental type system extensions for programs checked with the mypy typechecker."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -234,7 +234,7 @@ sqlalchemy2-stubs = "*"
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -274,7 +274,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "af820c5303d91004dba5613e9b8758f6a51a560e1567cf16b0f1467c8da5c6f1"
+content-hash = "d7efef374771353d339dcc5a4e5cb0ac35cd1e2656eac0efb1960c819f28c6c5"
 
 [metadata.files]
 asyncpg = [

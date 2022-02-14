@@ -1,14 +1,27 @@
 """This module provides the Pyfly CLI."""
-
-from pathlib import Path
 from typing import List, Optional
 
 import typer
-import asyncio
 
-# from pyfly import config, database
-from config import *
-from database import *
+(
+    SUCCESS,
+    DIR_ERROR,
+    FILE_ERROR,
+    DB_READ_ERROR,
+    DB_WRITE_ERROR,
+    JSON_ERROR,
+    ID_ERROR
+) = range(7)
+
+ERRORS = {
+    DIR_ERROR: "config directory error",
+    FILE_ERROR: "config file error",
+    DB_READ_ERROR: "database read error",
+    DB_WRITE_ERROR: "database write error",
+    ID_ERROR: "to-do id error",
+}
+from .config import *
+from .database import *
 
 app = typer.Typer()
 
@@ -25,7 +38,7 @@ def init(
     app_init_error = init_app(db_path)
     if app_init_error:
         typer.secho(
-            f'[INFO] Creating app failed with "DB_READ_ERROR"',
+            f'[INFO] Creating app failed with "{DB_READ_ERROR}"',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)

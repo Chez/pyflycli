@@ -1,6 +1,6 @@
 """PyFly To-Do entry point script."""
 
-from pyfly import app
+from aviation.pyfly import app
 
 
 def main():
