@@ -1,6 +1,7 @@
 """This module provides the Pyfly CLI."""
+import time
 from typing import List, Optional
-
+from webbrowser import get
 import typer
 
 from rich.console import Console
@@ -47,41 +48,24 @@ def list_all() -> None:
         )
         raise typer.Exit()
     
-    console.print("[bold magenta]Todos[/bold magenta]!", "💻")
+    console.print("\n[bold magenta]Flights[/bold magenta]!", "✈")
 
     table = Table(show_header=True, header_style="bold blue")
-    table.add_column("#", style="dim", width=6)
-    table.add_column("Todo", min_width=20)
-    table.add_column("Category", min_width=12, justify="right")
-    table.add_column("Done", min_width=12, justify="right")
+    table.add_column("id #", style="dim", width=6)
+    table.add_column("Time Aquired", min_width=20)
+    table.add_column("Most Recent", min_width=12, justify="right")
     
+    def get_color(response_id):
+        COLORS = {'most_recent': 'green', 'previous': 'white'}
+        return COLORS["most_recent"] if response_id == 1 else COLORS["previous"]
     
+    limit = 10
+    for response in all_responses[:limit]:
+        c = get_color(response.id)
+        is_done_str = '✅' if response.id == 1 else '❌'
+        table.add_row(str(response.id), f'[{c}]{response.time_created}[/{c}]', is_done_str) 
+
     console.print(table)
-
-
-
-    # typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
-    # columns = (
-    #     "ID.  ",
-    #     "| Priority  ",
-    #     "| Done  ",
-    #     "| Description  ",
-    # )
-    # headers = "".join(columns)
-    # typer.secho(headers, fg=typer.colors.BLUE, bold=True)
-    # typer.secho("-" * len(headers), fg=typer.colors.BLUE)
-    # for id, todo in enumerate(todo_list, 1):
-    #     desc, priority, done = todo.values()
-    #     typer.secho(
-    #         f"{id}{(len(columns[0]) - len(str(id))) * ' '}"
-    #         f"| ({priority}){(len(columns[1]) - len(str(priority)) - 4) * ' '}"
-    #         f"| {done}{(len(columns[2]) - len(str(done)) - 2) * ' '}"
-    #         f"| {desc}",
-    #         fg=typer.colors.BLUE,
-    #     )
-    # typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
-
-
 
 # @app.command(name="list")
 # def list_all() -> None:
