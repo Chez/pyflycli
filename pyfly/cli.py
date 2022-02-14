@@ -24,12 +24,12 @@ def init(
     app_init_error = config.init_app(db_path)
     if app_init_error:
         typer.secho(
-            f'Creating app failed with "{ERRORS[app_init_error]}"',
+            f'[INFO] Creating app failed with "{ERRORS[app_init_error]}"',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
     else:
-        typer.secho("Success!", fg=typer.colors.GREEN)
+        typer.secho("[INFO] Application initialized.", fg=typer.colors.GREEN)
 
 # def get_todoer() -> rptodo.Todoer:
 #     if config.CONFIG_FILE_PATH.exists():
@@ -48,28 +48,6 @@ def init(
 #             fg=typer.colors.RED,
 #         )
 #         raise typer.Exit(1)
-
-
-@app.command()
-def add(
-    description: List[str] = typer.Argument(...),
-    priority: int = typer.Option(2, "--priority", "-p", min=1, max=3),
-) -> None:
-    """Add a new to-do with a DESCRIPTION."""
-    todoer = get_todoer()
-    todo, error = todoer.add(description, priority)
-    if error:
-        typer.secho(
-            f'Adding to-do failed with "{ERRORS[error]}"', fg=typer.colors.RED
-        )
-        raise typer.Exit(1)
-    else:
-        typer.secho(
-            f"""to-do: "{todo['Description']}" was added """
-            f"""with priority: {priority}""",
-            fg=typer.colors.GREEN,
-        )
-
 
 @app.command(name="list")
 def list_all() -> None:
@@ -101,94 +79,6 @@ def list_all() -> None:
             fg=typer.colors.BLUE,
         )
     typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
-
-
-@app.command(name="complete")
-def set_done(todo_id: int = typer.Argument(...)) -> None:
-    """Complete a to-do by setting it as done using its TODO_ID."""
-    todoer = get_todoer()
-    todo, error = todoer.set_done(todo_id)
-    if error:
-        typer.secho(
-            f'Completing to-do # "{todo_id}" failed with "{ERRORS[error]}"',
-            fg=typer.colors.RED,
-        )
-        raise typer.Exit(1)
-    else:
-        typer.secho(
-            f"""to-do # {todo_id} "{todo['Description']}" completed!""",
-            fg=typer.colors.GREEN,
-        )
-
-
-@app.command()
-def remove(
-    todo_id: int = typer.Argument(...),
-    force: bool = typer.Option(
-        False,
-        "--force",
-        "-f",
-        help="Force deletion without confirmation.",
-    ),
-) -> None:
-    """Remove a to-do using its TODO_ID."""
-    todoer = get_todoer()
-
-    def _remove():
-        todo, error = todoer.remove(todo_id)
-        if error:
-            typer.secho(
-                f'Removing to-do # {todo_id} failed with "{ERRORS[error]}"',
-                fg=typer.colors.RED,
-            )
-            raise typer.Exit(1)
-        else:
-            typer.secho(
-                f"""to-do # {todo_id}: '{todo["Description"]}' was removed""",
-                fg=typer.colors.GREEN,
-            )
-
-    if force:
-        _remove()
-    else:
-        todo_list = todoer.get_todo_list()
-        try:
-            todo = todo_list[todo_id - 1]
-        except IndexError:
-            typer.secho("Invalid TODO_ID", fg=typer.colors.RED)
-            raise typer.Exit(1)
-        delete = typer.confirm(
-            f"Delete to-do # {todo_id}: {todo['Description']}?"
-        )
-        if delete:
-            _remove()
-        else:
-            typer.echo("Operation canceled")
-
-
-@app.command(name="clear")
-def remove_all(
-    force: bool = typer.Option(
-        ...,
-        prompt="Delete all to-dos?",
-        help="Force deletion without confirmation.",
-    ),
-) -> None:
-    """Remove all to-dos."""
-    todoer = get_todoer()
-    if force:
-        error = todoer.remove_all().error
-        if error:
-            typer.secho(
-                f'Removing to-dos failed with "{ERRORS[error]}"',
-                fg=typer.colors.RED,
-            )
-            raise typer.Exit(1)
-        else:
-            typer.secho("All to-dos were removed", fg=typer.colors.GREEN)
-    else:
-        typer.echo("Operation canceled")
-
 
 def _version_callback(value: bool) -> None:
     if value:

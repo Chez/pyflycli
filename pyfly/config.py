@@ -1,7 +1,5 @@
-"""This module provides the RP To-Do config functionality."""
-import configparser
+"""This module provides the  PyFly config functionality."""
 from pathlib import Path
-import asyncio
 
 import typer
 
@@ -21,30 +19,18 @@ def init_app(db_path: str) -> int:
     return SUCCESS
 
 def _init_database() -> int:
-    """Initialize DB by getting one entry from Response table."""
     asdb = AsyncDatabaseHandler()
     try:
-        is_awake = asdb.run("is_awake")
-        responses = asdb.run("get_all_responses")
-        if is_awake:
+        db_init_error = asdb.run("is_awake")
+        if db_init_error:
             typer.secho(
-                f'Creating database failed with "',
+                "[INFO] Failed to init db.",
                 fg=typer.colors.RED,
             )
             raise typer.Exit(1)
-        else:
-            typer.secho("The PyFly database exists with entries.", fg=typer.colors.GREEN)
-        print(f"total responses: {len(responses)}")
+        responses = asdb.run("get_all_responses")
+        typer.secho(
+            f"[INFO] Successful db connection. Total Responses: {len(responses)}", fg=typer.colors.GREEN)
     except OSError:
         return DB_READ_ERROR
     return SUCCESS
-
-# app_init_error = config.init_app(db_path)
-# if app_init_error:
-#     typer.secho(
-#         f'Creating database failed with "{ERRORS[app_init_error]}"',
-#         fg=typer.colors.RED,
-#     )
-#     raise typer.Exit(1)
-# else:
-#     typer.secho("The PyFly database exists with entries.", fg=typer.colors.GREEN)
