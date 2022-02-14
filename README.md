@@ -1,2 +1,2 @@
 # pyflycli
-Python Command Line Application (CLI) using Typer, SQLModel, Async-PostgreSQL
+Python CLI App using Typer, SQLModel, Async-PostgreSQL
