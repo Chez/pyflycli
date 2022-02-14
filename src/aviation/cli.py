@@ -58,6 +58,8 @@ def list_all() -> None:
     
     console.print(table)
 
+
+
     # typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
     # columns = (
     #     "ID.  ",
