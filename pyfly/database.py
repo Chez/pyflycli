@@ -23,14 +23,22 @@ class CRUDer:
         async with session() as session:
             async with session.begin():         
                 return await session.execute(select(Response))
-            
+
+    async def get_all_responses(self, session):
+        async with session() as session:
+            async with session.begin():
+                return await session.execute(select(Response))
+
 class AsyncDatabaseHandler:
     
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
         self.uri = uri
         self.crud = crud
         self.engine = self.create_async_engine(self.uri, echo=True)
-        self.ops = {"is_awake" : self.is_awake}
+        self.ops = {
+                "is_awake" : self.is_awake,
+                "get_all_responses" : self.get_all_responses    
+            }
         
     def create_async_engine(self, uri, echo=True):
         return create_async_engine(uri, echo=echo)
@@ -43,7 +51,16 @@ class AsyncDatabaseHandler:
     async def is_awake(self):
         session = self.get_async_session()
         result = await self.crud.get_one_response(session)
+        await self.engine.dispose()
         return result.scalars().all()[0]
+    
+    async def get_all_responses(self):
+        session = self.get_async_session()
+        result = await self.crud.get_all_responses(session)
+        responses = result.scalars().all()
+        await self.engine.dispose()
+        return responses[0]
+        # return ([Response(time_created=response.time_created, id=response.id) for response in responses])
 
     def run(self, operation):
         print(f"runninng {operation}")

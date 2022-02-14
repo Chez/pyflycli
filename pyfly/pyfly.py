@@ -16,14 +16,6 @@ from .fake_models import *
 asdb = AsyncDatabaseHandler()
 
 
-class CRUDer:
-    def __init__(self) -> None:
-        pass
-    
-    async def get_one_response(self, session):
-        return await session.execute(select(Response))
-
-
 class CurrentTodo(NamedTuple):
     todo: Dict[str, Any]
     error: int

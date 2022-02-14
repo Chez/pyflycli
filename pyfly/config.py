@@ -1,6 +1,7 @@
 """This module provides the RP To-Do config functionality."""
 import configparser
 from pathlib import Path
+import asyncio
 
 import typer
 
@@ -24,6 +25,8 @@ def _init_database() -> int:
     asdb = AsyncDatabaseHandler()
     try:
         first = asdb.run("is_awake")
+        all_r = asyncio.run(asdb.get_all_responses())
+        print(f"all r: {all_r}")
         if not first:
             typer.secho(
                 "Connection exists and tables have been created -- but database is empty",
