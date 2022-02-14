@@ -4,8 +4,8 @@
 
 
 1. Download the application's source code.
-```
-git clone https://github.com/k-zehnder/pyflycli
+```sh
+$ git clone https://github.com/k-zehnder/pyflycli
 ```
 2. Use Poetry to set up environment.
 
