@@ -49,7 +49,7 @@ def list_all() -> None:
         )
         raise typer.Exit()
     
-    console.print("\n[bold magenta]Responses[/bold magenta]!", "✈")
+    console.print("\n[bold green]Responses[/bold green]!", "✈")
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("id #", style="dim", width=6)
     table.add_column("Time Aquired", min_width=20)
@@ -64,10 +64,10 @@ def list_all() -> None:
     console.print(table)
   
 
-    console.print("\n[bold magenta]Flights[/bold magenta]!", "✈")
+    console.print("\n[bold green]Flights[/bold green]!", "✈")
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("id", style="dim", width=6)
-    table.add_column("response_id", style="dim", width=6)
+    table.add_column("response_id", width=12)
     table.add_column("identification", min_width=6)
     table.add_column("airplane_name", min_width=20)
     table.add_column("airplane_code", min_width=6, justify="right")
@@ -75,7 +75,7 @@ def list_all() -> None:
     limit = 10
     for flight in all_flights[::-1][:limit]:
         c = "white"
-        table.add_row(str(flight.id), f'[{c}]{flight.response_id}[/{c}]', f'[{c}]{flight.identification}[/{c}]', f'[{c}]{flight.airline_name}[/{c}]',  f'[{c}]{flight.airplane_code}[/{c}]') 
+        table.add_row(f'[{c}]{flight.id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.identification}[/{c}]', f'[{c}]{flight.airline_name}[/{c}]',  f'[{c}]{flight.airplane_code}[/{c}]') 
         
     console.print(table)
 
