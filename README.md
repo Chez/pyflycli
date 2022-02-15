@@ -11,16 +11,14 @@ $ git clone https://github.com/k-zehnder/pyflycli
 
 ```sh
 $ cd pyflicli/
-$ poetry install 
-$ poetry shell
+$ pip install poetry
+$ poetry shell 
+$ poetry install
 ```
-
 3. Initialize the application
-
 ```sh 
 $ poetry run pyfly init
 ```
-
 4. List Responses
 ```sh 
 $ poetry run pyfly list
