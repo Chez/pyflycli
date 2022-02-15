@@ -37,7 +37,7 @@ def init(
 
 @app.command(name="responses")
 def list_all_responses() -> None:
-    """List all responses flights."""
+    """List all Responses."""
     handler =  AsyncDatabaseHandler()
     all_responses = handler.run("get_all_responses")
     if len(all_responses) == 0:
