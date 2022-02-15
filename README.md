@@ -25,4 +25,5 @@ $ poetry run pyfly list
 ```
 
 ## Example Image
+**note** one-to-many relationship between response (one) --> detailedflight (many). Each time the data is pulled (cron job running every 30 min) from Flight Radar API (not shown in this project) a Response object is created, which holds a relationship to DetailedFlight objects.
 ![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/demo.png)
