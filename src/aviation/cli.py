@@ -26,23 +26,20 @@ def init(
     ),
 ) -> None:  # sourcery skip: use-named-expression
     """Initialize the Pyfly app."""
-    app_init_error = init_app(db_path)
+    message = "[INFO] Application status: "
+    app_init_error = init_app()
     if app_init_error:
-        typer.secho(
-            f'[INFO] Creating app failed with "{DB_READ_ERROR}"',
-            fg=typer.colors.RED,
-        )
+        status = typer.style("bad", fg=typer.colors.RED, bold=True),
+        typer.echo(message + status)
         raise typer.Exit(1)
-    else:
-        typer.secho("[INFO] Application initialized.", fg=typer.colors.GREEN)
+    status = typer.style("good", fg=typer.colors.GREEN, bold=True)
+    typer.echo(message + status)
 
-
-@app.command(name="list")
-def list_all() -> None:
+@app.command(name="responses")
+def list_all_responses() -> None:
     """List all responses flights."""
     handler =  AsyncDatabaseHandler()
     all_responses = handler.run("get_all_responses")
-    all_flights = handler.run("get_all_flights")
     if len(all_responses) == 0:
         typer.secho(
             "There are no Response in the DB yet", fg=typer.colors.RED
@@ -63,7 +60,17 @@ def list_all() -> None:
     
     console.print(table)
   
-
+@app.command(name="flights")
+def list_all_flights() -> None:
+    """List all DetailedFlights."""
+    handler =  AsyncDatabaseHandler()
+    all_flights = handler.run("get_all_flights")
+    if len(all_flights) == 0:
+        typer.secho(
+            "There are no Flights in the DB yet", fg=typer.colors.RED
+        )
+        raise typer.Exit()
+    
     console.print("\n[bold green]Flights[/bold green]!", "✈")
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("id", style="dim", width=6)

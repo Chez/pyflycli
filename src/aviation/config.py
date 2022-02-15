@@ -7,7 +7,7 @@ from aviation.database import AsyncDatabaseHandler
 from aviation.errors import *
 
 
-def init_app(db_path: str) -> int:
+def init_app() -> int:
     """Initialize the application."""
     config_code = _init_database()
     if config_code != SUCCESS:
@@ -17,16 +17,14 @@ def init_app(db_path: str) -> int:
 def _init_database() -> int:
     asdb = AsyncDatabaseHandler()
     try:
+        message = "[INFO] Database status: "
         db_init_error = asdb.run("is_awake")
         if db_init_error:
-            typer.secho(
-                "[INFO] Failed to init db.",
-                fg=typer.colors.RED,
-            )
+            status = typer.style("bad", fg=typer.colors.RED, bold=True)
+            typer.echo(message + status)        
             raise typer.Exit(1)
-        responses = asdb.run("get_all_responses")
-        typer.secho(
-            f"[INFO] Successful db connection. Total Responses: {len(responses)}", fg=typer.colors.GREEN)
+        status = typer.style("good", fg=typer.colors.GREEN, bold=True)
+        typer.echo(message + status)
     except OSError:
         return DB_READ_ERROR
     return SUCCESS
