@@ -39,7 +39,7 @@ def init(
 
 @app.command(name="list")
 def list_all() -> None:
-    """List all to-dos."""
+    """List all responses flights."""
     handler =  AsyncDatabaseHandler()
     all_responses = handler.run("get_all_responses")
     all_flights = handler.run("get_all_flights")
