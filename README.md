@@ -7,12 +7,16 @@
 ```sh
 $ git clone https://github.com/k-zehnder/pyflycli
 ```
-2. Use Poetry to set up environment.
+2. Install Poetry with pip.
+```sh
+$ pip install poetry
+```
+3. Use Poetry to set up environment.
 
 ```sh
 $ cd pyflicli/
-$ poetry install 
-$ poetry shell
+$ poetry shell 
+$ poetry install
 ```
 
 3. Initialize the application
