@@ -21,7 +21,7 @@ $ poetry run pyfly init
 ```
 4. List Responses
 ```sh 
-$ poetry run pyfly list
+$ poetry run pyfly responses
 ```
 
 ## Example Image
