@@ -91,17 +91,17 @@ class Code(BaseModel):
         orm_mode = True 
         
 class Airline(BaseModel):
-    name: Optional[str] = Field(default=None, primary_key=False)
-    short: Optional[str] = Field(default=None, primary_key=False)
-    url: Optional[str] = Field(default=None, primary_key=False)
-    code: Optional[Code] = Field(default=None, primary_key=False)
+    name: Optional[str] = Field(default="name", primary_key=False)
+    short: Optional[str] =  Field(default="short", primary_key=False)
+    url: Optional[str] = Field(default="url", primary_key=False)
+    code: Optional[Code] = Field(default=Code(), primary_key=False)
     
     class Config:
         orm_mode = True 
 
 class Model(BaseModel):
-    code: Optional[str] = Field(default=None, primary_key=False)
-    text: Optional[str] = Field(default=None, primary_key=False)
+    code: Optional[str] = Field(default="code", primary_key=False)
+    text: Optional[str] = Field(default="text", primary_key=False)
     
     class Config:
         orm_mode = True 
@@ -113,7 +113,7 @@ class Aircraft(BaseModel):
     age: Optional[int] = Field(default=None, primary_key=False)
     msn: Optional[str] = Field(default=None, primary_key=False)
     images: Optional[List[str]] = Field(default=None, primary_key=False)
-    model: Optional[Model]
+    model: Optional[Model] = Field(default=Model(), primary_key=False)
     
     class Config:
         orm_mode = True 
@@ -162,13 +162,8 @@ class Area(BaseModel):
     class Config:
         orm_mode = True 
         
-
-FIELDS = ['mode_s', 'lat', 'lon', 'track', 'alt', 'speed',
-          'squawk', 'radar', 'model', 'registration', 'undefined',
-          'origin', 'destination', 'iata', 'undefined2',
-          'vertical_speed', 'icao', 'undefined3', 'airline']
-
 class BriefFlightBase(BaseModel):
+    
     flight_id: Optional[str] = Field(default=None, primary_key=False)
     mode_s: Optional[str] = Field(default=None, primary_key=False)
     lat: Optional[float] = Field(default=None, primary_key=False)
@@ -193,7 +188,11 @@ class BriefFlightBase(BaseModel):
     @staticmethod
     def create(flight_id: str, data: list):
         """Static method for Flight instance creation."""
-        return BriefFlight(flight_id=flight_id, **dict(zip(FIELDS, data)))
+        fields = ['mode_s', 'lat', 'lon', 'track', 'alt', 'speed',
+                'squawk', 'radar', 'model', 'registration', 'undefined',
+                'origin', 'destination', 'iata', 'undefined2',
+                'vertical_speed', 'icao', 'undefined3', 'airline']
+        return BriefFlight(flight_id=flight_id, **dict(zip(fields, data)))
 
     class Config:
         orm_mode = True 
