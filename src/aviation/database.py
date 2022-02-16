@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List
 import asyncio
+import asyncer 
+import anyio
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -16,8 +18,6 @@ Select.inherit_cache = True  # type: ignore
 
 from aviation.models import *
 from aviation.errors import *
-
-DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"
 
 
 class CRUDer:
@@ -73,8 +73,7 @@ class AsyncDatabaseHandler:
         return flights
     
     def run(self, operation):
-        # print(f"runninng {operation}")
-        result = asyncio.run(getattr(self, operation)())# must return to variable!
-        return result
+        return asyncio.run(getattr(self, operation)())
     
     
+

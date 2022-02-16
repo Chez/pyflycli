@@ -17,14 +17,7 @@ app = typer.Typer()
 
 
 @app.command()
-def init(
-    db_path: str = typer.Option(
-        str(DEFAULT_DB_FILE_PATH),
-        "--db-path",
-        "-db",
-        prompt="to-do database location?",
-    ),
-) -> None:  # sourcery skip: use-named-expression
+def init():
     """Initialize the Pyfly app."""
     message = "[INFO] Application status: "
     app_init_error = init_app()
