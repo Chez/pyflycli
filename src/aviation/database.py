@@ -1,4 +1,4 @@
-"""This module provides the RP To-Do database functionality."""
+"""This module provides the OPyFly database functionality."""
 import os
 from pathlib import Path
 from typing import Any, Dict, List
@@ -14,7 +14,7 @@ from sqlmodel.sql.expression import Select, SelectOfScalar
 SelectOfScalar.inherit_cache = True  # type: ignore
 Select.inherit_cache = True  # type: ignore
 
-from aviation.fake_models import *
+from aviation.models import *
 from aviation.errors import *
 
 DEFAULT_DB_FILE_PATH = "/home/batman/Desktop/py/pyflycli/pyfly/default.json"

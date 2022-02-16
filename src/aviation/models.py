@@ -1,3 +1,6 @@
+from codecs import Codec
+from time import strftime
+from tokenize import String
 from sqlmodel import Field, Relationship, Session, Column, DateTime, SQLModel, create_engine, select
 
 from typing import List, Optional, Any, Type
@@ -92,12 +95,14 @@ class Airline(BaseModel):
     short: Optional[str] = Field(default=None, primary_key=False)
     url: Optional[str] = Field(default=None, primary_key=False)
     code: Optional[Code] = Field(default=None, primary_key=False)
+    
     class Config:
         orm_mode = True 
 
 class Model(BaseModel):
     code: Optional[str] = Field(default=None, primary_key=False)
     text: Optional[str] = Field(default=None, primary_key=False)
+    
     class Config:
         orm_mode = True 
 
@@ -109,6 +114,7 @@ class Aircraft(BaseModel):
     msn: Optional[str] = Field(default=None, primary_key=False)
     images: Optional[List[str]] = Field(default=None, primary_key=False)
     model: Optional[Model]
+    
     class Config:
         orm_mode = True 
         allow_population_by_field_name = True
@@ -121,7 +127,6 @@ class DetailedFlightCreate(DetailedFlightBase):
 class ResponseCreate(ResponseBase):
     pass
 
-#NOTE: AllFlightRead INHERIT FROM REGULAR NOT SQLMODEL!      
 class AllFlightRead(BaseModel):
     time_read: datetime.datetime = Field(
     sa_column=Column(
@@ -129,37 +134,10 @@ class AllFlightRead(BaseModel):
         nullable=False
     )) 
     db_data: List[DetailedFlight]
+    
     class Config:
         orm_mode = True 
-
-#NOTE: BriefFlight INHERIT FROM REGULAR NOT SQLMODEL!
-class BriefFlightBase(BaseModel):
-    # flight_id: Any = "23"
-    lat: float = 23.4
-    lon: float = 25.6
-    track: int = 25
-    speed: int = 250
-    pic: str = "pic"
-    id: Any = 1
-    
-    @validator("speed")
-    def speed_sanity_check(cls, speed):
-        if speed > 1000:
-            raise ImpossibleSpeedError(speed=speed)
-        return speed
-    
-    class Config:
-        orm_mode = True
         
-class BriefFlight(BriefFlightBase):
-    pass
-
-    class Config:
-        orm_mode = True 
-
-class BriefFlightCreate(BriefFlightBase):
-    pass
-
 class Point(BaseModel):
     lat: float = 0.0
     lon: float = 0.0
@@ -183,3 +161,48 @@ class Area(BaseModel):
                                        self.ne.lat, self.ne.lon))
     class Config:
         orm_mode = True 
+        
+
+FIELDS = ['mode_s', 'lat', 'lon', 'track', 'alt', 'speed',
+          'squawk', 'radar', 'model', 'registration', 'undefined',
+          'origin', 'destination', 'iata', 'undefined2',
+          'vertical_speed', 'icao', 'undefined3', 'airline']
+
+class BriefFlightBase(BaseModel):
+    flight_id: Optional[str] = Field(default=None, primary_key=False)
+    mode_s: Optional[str] = Field(default=None, primary_key=False)
+    lat: Optional[float] = Field(default=None, primary_key=False)
+    lon: Optional[float] = Field(default=None, primary_key=False)
+    track: Optional[int] = Field(default=None, primary_key=False)
+    alt: Optional[str] = Field(default=None, primary_key=False)
+    speed: Optional[int] = Field(default=None, primary_key=False)    
+    squawk: Optional[str] = Field(default=None, primary_key=False)    
+    radar: Optional[str] = Field(default=None, primary_key=False)
+    model: Optional[str] = Field(default=None, primary_key=False)
+    registration: Optional[str] = Field(default=None, primary_key=False)
+    undefined: Optional[str] = Field(default=None, primary_key=False)
+    origin: Optional[str] = Field(default=None, primary_key=False)
+    destination: Optional[str] = Field(default=None, primary_key=False)
+    iata: Optional[str] = Field(default=None, primary_key=False)
+    undefined2: Optional[str] = Field(default=None, primary_key=False)
+    vertical_speed: Optional[str] = Field(default=None, primary_key=False)
+    icao: Optional[str] = Field(default=None, primary_key=False)
+    undefined3: Optional[str] = Field(default=None, primary_key=False)
+    airline: Optional[str] = Field(default=None, primary_key=False)
+
+    @staticmethod
+    def create(flight_id: str, data: list):
+        """Static method for Flight instance creation."""
+        return BriefFlight(flight_id=flight_id, **dict(zip(FIELDS, data)))
+
+    class Config:
+        orm_mode = True 
+
+class BriefFlight(BriefFlightBase):
+    pass
+
+    class Config:
+        orm_mode = True 
+
+class BriefFlightCreate(BriefFlightBase):
+    pass

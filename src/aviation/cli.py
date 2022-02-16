@@ -29,7 +29,7 @@ def init(
     message = "[INFO] Application status: "
     app_init_error = init_app()
     if app_init_error:
-        status = typer.style("bad", fg=typer.colors.RED, bold=True),
+        status = typer.style("bad", fg=typer.colors.RED, bold=True)
         typer.echo(message + status)
         raise typer.Exit(1)
     status = typer.style("good", fg=typer.colors.GREEN, bold=True)
@@ -55,8 +55,8 @@ def list_all_responses() -> None:
     limit = 10
     for response in all_responses[::-1][:limit]:
         c = "green" if response.id == all_responses[-1].id else "white"
-        is_done_str = '✅' if response.id == all_responses[-1].id else '❌'
-        table.add_row(str(response.id), f'[{c}]{response.time_created}[/{c}]', is_done_str) 
+        is_most_recent = '✅' if response.id == all_responses[-1].id else '❌'
+        table.add_row(str(response.id), f'[{c}]{response.time_created}[/{c}]', is_most_recent) 
     
     console.print(table)
   
