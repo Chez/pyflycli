@@ -64,7 +64,7 @@ def list_all_detailed() -> None:
         )
         raise typer.Exit()
     
-    console.print("\n[bold green]Flights[/bold green]!", "✈")
+    console.print("\n[bold green]DetailedFlights[/bold green]!", "✈")
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("id", style="dim", width=6)
     table.add_column("response_id", width=12)
@@ -90,9 +90,10 @@ def list_all_brief() -> None:
         )
         raise typer.Exit()
     
-    console.print("\n[bold green]Flights[/bold green]!", "✈")
+    console.print("\n[bold green]BriefFlights[/bold green]!", "✈")
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("id", style="dim", width=6)
+    table.add_column("identification", width=10)
     table.add_column("response_id", width=12)
     table.add_column("lat", min_width=6)
     table.add_column("lon", min_width=6)
@@ -104,7 +105,7 @@ def list_all_brief() -> None:
     limit = 10
     for flight in all_flights[::-1][:limit]:
         c = "white"
-        table.add_row(f'[{c}]{flight.id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.lat}[/{c}]', f'[{c}]{flight.lon}[/{c}]',  f'[{c}]{flight.origin}[/{c}]',f'[{c}]{flight.destination}[/{c}]', f'[{c}]{flight.speed}[/{c}]',  f'[{c}]{flight.vertical_speed}[/{c}]') 
+        table.add_row(f'[{c}]{flight.id}[/{c}]', f'[{c}]{flight.flight_id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.lat}[/{c}]', f'[{c}]{flight.lon}[/{c}]',  f'[{c}]{flight.origin}[/{c}]',f'[{c}]{flight.destination}[/{c}]', f'[{c}]{flight.speed}[/{c}]',  f'[{c}]{flight.vertical_speed}[/{c}]') 
         
     console.print(table)
 
