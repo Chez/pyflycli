@@ -53,11 +53,11 @@ def list_all_responses() -> None:
     
     console.print(table)
   
-@app.command(name="flights")
-def list_all_flights() -> None:
+@app.command(name="detailed")
+def list_all_detailed() -> None:
     """List all DetailedFlights."""
     handler =  AsyncDatabaseHandler()
-    all_flights = handler.run("get_all_flights")
+    all_flights = handler.run("get_all_detailed")
     if len(all_flights) == 0:
         typer.secho(
             "There are no Flights in the DB yet", fg=typer.colors.RED
@@ -79,5 +79,32 @@ def list_all_flights() -> None:
         
     console.print(table)
 
+@app.command(name="brief")
+def list_all_brief() -> None:
+    """List all BriefFlights."""
+    handler =  AsyncDatabaseHandler()
+    all_flights = handler.run("get_all_brief")
+    if len(all_flights) == 0:
+        typer.secho(
+            "There are no Flights in the DB yet", fg=typer.colors.RED
+        )
+        raise typer.Exit()
+    
+    console.print("\n[bold green]Flights[/bold green]!", "✈")
+    table = Table(show_header=True, header_style="bold blue")
+    table.add_column("id", style="dim", width=6)
+    table.add_column("response_id", width=12)
+    table.add_column("lat", min_width=6)
+    table.add_column("lon", min_width=6)
+    table.add_column("origin", min_width=10)
+    table.add_column("destination", min_width=10)
+    table.add_column("speed", min_width=10)
+    table.add_column("vertical speed", min_width=6, justify="right")
 
+    limit = 10
+    for flight in all_flights[::-1][:limit]:
+        c = "white"
+        table.add_row(f'[{c}]{flight.id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.lat}[/{c}]', f'[{c}]{flight.lon}[/{c}]',  f'[{c}]{flight.origin}[/{c}]',f'[{c}]{flight.destination}[/{c}]', f'[{c}]{flight.speed}[/{c}]',  f'[{c}]{flight.vertical_speed}[/{c}]') 
+        
+    console.print(table)
 

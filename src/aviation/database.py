@@ -32,11 +32,17 @@ class CRUDer:
             async with session.begin():
                 return await session.execute(select(Response))
             
-    async def get_all_flights(self, session):
+    async def get_all_detailed(self, session):
         async with session() as session:
             async with session.begin():
                 return await session.execute(select(DetailedFlight))
+
             
+    async def get_all_brief(self, session):
+        async with session() as session:
+            async with session.begin():
+                return await session.execute(select(BriefFlight))     
+             
 class AsyncDatabaseHandler:
     
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
@@ -65,9 +71,16 @@ class AsyncDatabaseHandler:
         await self.engine.dispose()
         return responses
     
-    async def get_all_flights(self):
+    async def get_all_detailed(self):
         session = self.get_async_session()
-        result = await self.crud.get_all_flights(session)
+        result = await self.crud.get_all_detailed(session)
+        flights = result.scalars().all()
+        await self.engine.dispose()
+        return flights
+    
+    async def get_all_brief(self):
+        session = self.get_async_session()
+        result = await self.crud.get_all_brief(session)
         flights = result.scalars().all()
         await self.engine.dispose()
         return flights
