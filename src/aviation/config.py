@@ -6,6 +6,7 @@ from pathlib import Path
 from aviation.database import AsyncDatabaseHandler, DummyAsyncDatabaseHandler
 from aviation.errors import *
 
+
 def init_app() -> int:
     """Initialize the application."""
     config_code = _init_database()
