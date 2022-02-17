@@ -26,3 +26,4 @@ $ poetry run pyfly responses
 
 ## Example Image
 ![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/demo.png)
+![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/i_work_linkedin.gif)
