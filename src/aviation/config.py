@@ -27,6 +27,7 @@ def _init_database() -> int:
 
                 dh = DummyAsyncDatabaseHandler()
                 dh.run("parse_data")
+                
                 status = typer.style("[INFO] Success local DB.", fg=typer.colors.GREEN, bold=True)
                 typer.echo(message + status)
             except:
