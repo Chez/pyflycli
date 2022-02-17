@@ -11,9 +11,18 @@ class Log:
         message = "[INFO] Database status: "
         status = typer.style("good", fg=typer.colors.GREEN, bold=True)
         
+    def bad(self):
+        message = "[INFO] Database status: "
+        status = typer.style("bad", fg=typer.colors.GREEN, bold=True)
+        
     def success_local_db(self):
         message = "[INFO] Database status: "
         status = typer.style("no postgres. loaded local sqlite db", fg=typer.colors.GREEN, bold=True)
+        typer.echo(message + status)
+
+    def postgres_fail(self):
+        message = "[INFO] Database status: "
+        status = typer.style("postgres db failed.", fg=typer.colors.RED, bold=True)
         typer.echo(message + status)
 
 def init_app() -> int:
@@ -32,16 +41,12 @@ def _init_database() -> int:
         db_init_error = asdb.run("is_awake") # DB_READ_ERROR to simulate failed PG load.
         if db_init_error:
             try:
-                status = typer.style("postgres db failed.", fg=typer.colors.RED, bold=True)
-                typer.echo(message + status)
-
+                log.postgres_fail()
                 dh = DummyAsyncDatabaseHandler()
                 dh.run("parse_data")
-                
                 log.success_local_db()
             except:
-                status = typer.style("bad", fg=typer.colors.RED, bold=True)
-                typer.echo(message + status)        
+                log.bad()       
                 raise typer.Exit(1)
         log.good()
     except OSError:
