@@ -3,7 +3,7 @@ import typer
 
 from pathlib import Path
 
-from aviation.database import AsyncDatabaseHandler
+from aviation.database import AsyncDatabaseHandler, DummyAsyncDatabaseHandler
 from aviation.errors import *
 
 
@@ -18,8 +18,12 @@ def _init_database() -> int:
     asdb = AsyncDatabaseHandler()
     try:
         message = "[INFO] Database status: "
-        db_init_error = asdb.run("is_awake")
+        # db_init_error = asdb.run("is_awake")
+        db_init_error = DB_READ_ERROR
         if db_init_error:
+            dh = DummyAsyncDatabaseHandler()
+            dh.run("parse_data")
+            
             status = typer.style("bad", fg=typer.colors.RED, bold=True)
             typer.echo(message + status)        
             raise typer.Exit(1)

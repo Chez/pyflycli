@@ -1,11 +1,12 @@
 """This module provides the OPyFly database functionality."""
 import os
+import json
 from pathlib import Path
 from typing import Any, Dict, List
 import asyncio
-import asyncer 
-import anyio
+import databases
 
+import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -42,7 +43,19 @@ class CRUDer:
         async with session() as session:
             async with session.begin():
                 return await session.execute(select(BriefFlight))     
-             
+            
+    async def crud_create(self, session, response: Response):
+        async with session() as session:
+            async with session.begin():
+                session.add(response)
+            await session.commit()                
+            return response
+        
+    async def crud_return(self, session):
+        async with session() as session:
+            async with session.begin():
+                return await session.execute(select(Response))  
+                   
 class AsyncDatabaseHandler:
     
     def __init__(self, uri: str="postgresql+asyncpg://postgres:password@localhost/foo", crud: CRUDer = CRUDer()) -> None:
@@ -88,5 +101,56 @@ class AsyncDatabaseHandler:
     def run(self, operation):
         return asyncio.run(getattr(self, operation)())
     
+class DummyAsyncDatabaseHandler:
     
+    def __init__(self, crud: CRUDer = CRUDer()) -> None:
+        self.uri = "sqlite+aiosqlite:///./test.db"
+        self.crud = crud
+        self.engine = self.create_async_engine(self.uri, echo=False)
+    
+    def create_async_engine(self, uri, echo=True):
+        return create_async_engine(uri, echo=echo)
 
+    def get_async_session(self):
+        return sessionmaker(
+            self.engine, expire_on_commit=False, class_=AsyncSession
+        )
+        
+    async def create_fake_data(self, response):
+        session = self.get_async_session()
+        async with self.engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.drop_all)
+            await conn.run_sync(SQLModel.metadata.create_all)
+        result = await self.crud.crud_create(session, response)
+        await self.engine.dispose()
+        return result
+    
+    async def return_fake_data(self):
+        session = self.get_async_session()
+        result = await self.crud.crud_return(session)
+        await self.engine.dispose()
+        return result
+    
+    async def create_tables(self):        
+        async with self.engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.drop_all)
+            await conn.run_sync(SQLModel.metadata.create_all)
+            
+    async def parse_data(self):        
+        await self.create_tables()
+        
+        with open('/home/batman/Desktop/py/pyflycli/src/aviation/dummy_data.json') as json_file:
+            data = json.load(json_file)
+            
+        r1 = Response(
+                name="controller42",
+                time_created=datetime.datetime.now(),
+                flights=[DetailedFlight(**flight) for flight in data["detailed_out"]],
+                briefs=[BriefFlight(**flight) for flight in data["briefs_out"]]
+        )  
+        created = await self.create_fake_data(r1)
+        returned = await self.return_fake_data()
+        print(created, returned)
+    
+    def run(self, operation):
+        return asyncio.run(getattr(self, operation)())
