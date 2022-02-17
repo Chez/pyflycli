@@ -15,12 +15,11 @@ def init_app() -> int:
     return SUCCESS
 
 def _init_database() -> int:
-    sim_error = False
     asdb = AsyncDatabaseHandler()
     try:
         message = "[INFO] Database status: "
-        # db_init_error = asdb.run("is_awake") # DB_READ_ERROR to simulate failed PG load.
         db_init_error = DB_READ_ERROR
+        db_init_error = asdb.run("is_awake") # DB_READ_ERROR to simulate failed PG load.
         if db_init_error:
             try:
                 status = typer.style("[INFO] PG DB failed.", fg=typer.colors.RED, bold=True)
