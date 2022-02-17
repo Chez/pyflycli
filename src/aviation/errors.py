@@ -1,3 +1,5 @@
+import typer
+
 
 (
     SUCCESS,
@@ -16,3 +18,22 @@ ERRORS = {
     DB_WRITE_ERROR: "database write error",
     ID_ERROR: "to-do id error",
 }
+
+class Log:
+    def good(self):
+        message = "[INFO] Database status: "
+        status = typer.style("good", fg=typer.colors.GREEN, bold=True)
+        
+    def bad(self):
+        message = "[INFO] Database status: "
+        status = typer.style("bad", fg=typer.colors.GREEN, bold=True)
+        
+    def success_local_db(self):
+        message = "[INFO] Database status: "
+        status = typer.style("no postgres. loaded local sqlite db", fg=typer.colors.GREEN, bold=True)
+        typer.echo(message + status)
+
+    def postgres_fail(self):
+        message = "[INFO] Database status: "
+        status = typer.style("postgres db failed.", fg=typer.colors.RED, bold=True)
+        typer.echo(message + status)
