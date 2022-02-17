@@ -104,7 +104,7 @@ class AsyncDatabaseHandler:
 class DummyAsyncDatabaseHandler:
     
     def __init__(self, crud: CRUDer = CRUDer()) -> None:
-        self.uri = "sqlite+aiosqlite:///./test.db"
+        self.uri = "sqlite+aiosqlite:///./foo_two.db"
         self.crud = crud
         self.engine = self.create_async_engine(self.uri, echo=False)
     
@@ -150,7 +150,7 @@ class DummyAsyncDatabaseHandler:
         )  
         created = await self.create_fake_data(r1)
         returned = await self.return_fake_data()
-        print(created, returned)
+        #print(created, returned)
     
     def run(self, operation):
         return asyncio.run(getattr(self, operation)())
