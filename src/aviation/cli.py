@@ -12,6 +12,7 @@ from aviation.utils import *
 from aviation.config import *
 from aviation.database import *
 
+
 tp = TablePrinter()
 app = typer.Typer()
 
