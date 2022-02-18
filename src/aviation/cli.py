@@ -8,9 +8,9 @@ from rich.console import Console
 from rich.table import Table
 
 from aviation.errors import *
-from aviation.utils import *
-from aviation.config import *
-from aviation.database import *
+from aviation.config import init_app, _init_database
+from aviation.database import AsyncDatabaseHandler, DummyAsyncDatabaseHandler
+from aviation.utils import Console, TablePrinter
 
 
 tp = TablePrinter()
