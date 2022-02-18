@@ -10,7 +10,7 @@ $ git clone https://github.com/k-zehnder/pyflycli
 2. Use Poetry to set up environment.
 
 ```sh
-$ cd pyflicli/
+$ cd pyflycli/
 $ pip install poetry
 $ poetry shell 
 $ poetry install

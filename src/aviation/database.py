@@ -37,7 +37,6 @@ class CRUDer:
         async with session() as session:
             async with session.begin():
                 return await session.execute(select(DetailedFlight))
-
             
     async def get_all_brief(self, session):
         async with session() as session:
@@ -55,6 +54,7 @@ class CRUDer:
         async with session() as session:
             async with session.begin():
                 return await session.execute(select(Response))  
+                   
                    
 class AsyncDatabaseHandler:
     
@@ -100,6 +100,7 @@ class AsyncDatabaseHandler:
     
     def run(self, operation):
         return asyncio.run(getattr(self, operation)())
+    
     
 class DummyAsyncDatabaseHandler:
     
@@ -154,3 +155,4 @@ class DummyAsyncDatabaseHandler:
     
     def run(self, operation):
         return asyncio.run(getattr(self, operation)())
+

@@ -19,15 +19,13 @@ app = typer.Typer()
 @app.command()
 def init():
     """Initialize the Pyfly app."""
-    message = "[INFO] Application status: "
+    log = Log()
     app_init_error = init_app()
     if app_init_error:
-        status = typer.style("bad", fg=typer.colors.RED, bold=True)
-        typer.echo(message + status)
+        log.app_error()
         raise typer.Exit(1)
-    status = typer.style("good", fg=typer.colors.GREEN, bold=True)
-    typer.echo(message + status)
-
+    log.healthy()
+    
 @app.command(name="responses")
 def list_all_responses() -> None:
     """List all Responses."""
@@ -69,7 +67,7 @@ def list_all_detailed() -> None:
     table.add_column("id", style="dim", width=6)
     table.add_column("response_id", width=12)
     table.add_column("identification", min_width=6)
-    table.add_column("airplane_name", min_width=20)
+    table.add_column("airline_name", min_width=20)
     table.add_column("airplane_code", min_width=6, justify="right")
 
     limit = 10
@@ -95,6 +93,7 @@ def list_all_brief() -> None:
     table.add_column("id", style="dim", width=6)
     table.add_column("identification", width=10)
     table.add_column("response_id", width=12)
+    table.add_column("registration", min_width=6)
     table.add_column("lat", min_width=6)
     table.add_column("lon", min_width=6)
     table.add_column("origin", min_width=10)
@@ -105,7 +104,7 @@ def list_all_brief() -> None:
     limit = 10
     for flight in all_flights[::-1][:limit]:
         c = "white"
-        table.add_row(f'[{c}]{flight.id}[/{c}]', f'[{c}]{flight.flight_id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.lat}[/{c}]', f'[{c}]{flight.lon}[/{c}]',  f'[{c}]{flight.origin}[/{c}]',f'[{c}]{flight.destination}[/{c}]', f'[{c}]{flight.speed}[/{c}]',  f'[{c}]{flight.vertical_speed}[/{c}]') 
+        table.add_row(f'[{c}]{flight.id}[/{c}]', f'[{c}]{flight.flight_id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.registration}[/{c}]', f'[{c}]{flight.lat}[/{c}]', f'[{c}]{flight.lon}[/{c}]',  f'[{c}]{flight.origin}[/{c}]',f'[{c}]{flight.destination}[/{c}]', f'[{c}]{flight.speed}[/{c}]',  f'[{c}]{flight.vertical_speed}[/{c}]') 
         
     console.print(table)
 

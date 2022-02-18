@@ -16,6 +16,8 @@ asyncer = "^0.0.1"
 anyio = "^3.5.0"
 aiosqlite = "^0.17.0"
 databases = "^0.5.5"
+fastapi = "^0.74.0"
+progress = "^1.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -1,5 +1,7 @@
-"""This module provides the  PyFly config functionality."""
+"""This module provides the PyFly config functionality."""
 import typer
+
+import time
 
 from pathlib import Path
 
@@ -18,7 +20,6 @@ def _init_database() -> int:
     log = Log()
     asdb = AsyncDatabaseHandler()
     try:
-        message = "[INFO] Database status: "
         # db_init_error = DB_READ_ERROR
         db_init_error = asdb.run("is_awake") # DB_READ_ERROR to simulate failed PG load.
         if db_init_error:
@@ -28,9 +29,19 @@ def _init_database() -> int:
                 dh.run("parse_data")
                 log.success_local_db()
             except:
-                log.bad()       
+                log.db_unhealthy()       
                 raise typer.Exit(1)
-        log.good()
+        log.db_healthy()
     except OSError:
         return DB_READ_ERROR
     return SUCCESS
+
+def sim_typer_progress():
+    total = 0
+    with typer.progressbar(range(100)) as progress:
+        for value in progress:
+            # Fake processing time
+            time.sleep(0.01)
+            total += 1
+    typer.echo(f"Processed {total} things.")
+    

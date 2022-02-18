@@ -1,5 +1,6 @@
 import typer
 
+import time
 
 (
     SUCCESS,
@@ -20,14 +21,14 @@ ERRORS = {
 }
 
 class Log:
-    def good(self):
+    def db_healthy(self):
         message = "[INFO] Database status: "
         status = typer.style("good", fg=typer.colors.GREEN, bold=True)
         
-    def bad(self):
+    def db_unhealthy(self):
         message = "[INFO] Database status: "
         status = typer.style("bad", fg=typer.colors.GREEN, bold=True)
-        
+
     def success_local_db(self):
         message = "[INFO] Database status: "
         status = typer.style("no postgres. loaded local sqlite db", fg=typer.colors.GREEN, bold=True)
@@ -37,3 +38,22 @@ class Log:
         message = "[INFO] Database status: "
         status = typer.style("postgres db failed.", fg=typer.colors.RED, bold=True)
         typer.echo(message + status)
+        
+    def app_error(self):
+        message = "[INFO] Application status: "
+        status = typer.style("bad", fg=typer.colors.GREEN, bold=True)
+
+    def healthy(self):
+        self.sim_typer_progress()
+        message = "[INFO] Application status: "
+        status = typer.style("good", fg=typer.colors.GREEN, bold=True)
+        typer.echo(message + status)
+        
+
+    def sim_typer_progress(self):
+        total = 0
+        with typer.progressbar(range(100)) as progress:
+            for value in progress:
+                # Fake processing time
+                time.sleep(0.01)
+                total += 1
