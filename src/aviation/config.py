@@ -35,13 +35,3 @@ def _init_database() -> int:
     except OSError:
         return DB_READ_ERROR
     return SUCCESS
-
-def sim_typer_progress():
-    total = 0
-    with typer.progressbar(range(100)) as progress:
-        for value in progress:
-            # Fake processing time
-            time.sleep(0.01)
-            total += 1
-    typer.echo(f"Processed {total} things.")
-    
