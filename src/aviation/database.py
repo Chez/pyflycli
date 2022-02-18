@@ -1,4 +1,4 @@
-"""This module provides the OPyFly database functionality."""
+"""This module provides the PyFly database functionality."""
 import json
 from typing import Any, Dict, List
 import asyncio
