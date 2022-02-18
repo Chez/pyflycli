@@ -55,7 +55,7 @@ class CRUDer:
                    
 class AsyncDatabaseHandler:
     
-    def __init__(self, uri, crud: CRUDer = CRUDer()) -> None:
+    def __init__(self, crud: CRUDer = CRUDer()) -> None:
         self.uri = "postgresql+asyncpg://postgres:password@localhost/foo"
         self.crud = crud
         self.engine = self.create_async_engine(self.uri, echo=False)
