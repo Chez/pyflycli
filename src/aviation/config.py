@@ -20,8 +20,7 @@ def _init_database() -> int:
     log = Log()
     asdb = AsyncDatabaseHandler()
     try:
-        # db_init_error = DB_READ_ERROR
-        db_init_error = asdb.run("is_awake") # DB_READ_ERROR to simulate failed PG load.
+        db_init_error = asdb.run("is_awake")
         if db_init_error:
             try:
                 log.postgres_fail()
