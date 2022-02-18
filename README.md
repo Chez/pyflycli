@@ -25,7 +25,7 @@ $ poetry run pyfly responses
 ```
 
 ## Example 1
-![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/i_work_linkedin.gif)
+![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/sped_up.gif)
 
 ## Example 2
 ![Work in progress](https://github.com/k-zehnder/pyflycli/blob/main/demo.png)
