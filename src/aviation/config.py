@@ -1,10 +1,6 @@
 """This module provides the PyFly config functionality."""
 import typer
 
-import time
-
-from pathlib import Path
-
 from aviation.database import AsyncDatabaseHandler, DummyAsyncDatabaseHandler
 from aviation.errors import *
 

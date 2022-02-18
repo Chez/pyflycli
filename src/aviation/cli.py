@@ -1,11 +1,7 @@
 """This module provides the Pyfly CLI."""
 import time
 from typing import List, Optional
-from webbrowser import get
 import typer
-
-from rich.console import Console
-from rich.table import Table
 
 from aviation.errors import *
 from aviation.config import init_app, _init_database
