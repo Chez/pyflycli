@@ -41,14 +41,13 @@ class Log:
         
     def app_error(self):
         message = "[INFO] Application status: "
-        status = typer.style("bad", fg=typer.colors.GREEN, bold=True)
+        status = typer.style("bad", fg=typer.colors.RED, bold=True)
 
     def healthy(self):
         self.sim_typer_progress()
         message = "[INFO] Application status: "
         status = typer.style("good", fg=typer.colors.GREEN, bold=True)
         typer.echo(message + status)
-        
 
     def sim_typer_progress(self):
         total = 0

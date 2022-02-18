@@ -1,10 +1,7 @@
 """This module provides the OPyFly database functionality."""
-import os
 import json
-from pathlib import Path
 from typing import Any, Dict, List
 import asyncio
-import databases
 
 import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -140,7 +137,7 @@ class DummyAsyncDatabaseHandler:
     async def parse_data(self):        
         await self.create_tables()
         
-        with open('/home/batman/Desktop/py/pyflycli/src/aviation/dummy_data.json') as json_file:
+        with open('src/aviation/dummy_data.json') as json_file:
             data = json.load(json_file)
             
         r1 = Response(

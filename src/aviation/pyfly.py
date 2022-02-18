@@ -1,5 +1,5 @@
 """PyFly To-Do entry point script."""
-
+import typer
 from aviation.cli import app
 
 
@@ -9,4 +9,4 @@ def pyfly():
 
 
 if __name__ == "__main__":
-    pyfly()
+    typer.run(pyfly())
