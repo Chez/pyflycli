@@ -8,6 +8,7 @@ console = Console()
 
 
 class TablePrinter:
+    
     def print_response(self, all_responses):
         console.print("\n[bold green]Responses[/bold green]!", "✈")
         table = Table(show_header=True, header_style="bold blue")
@@ -20,9 +21,7 @@ class TablePrinter:
             c = "green" if response.id == all_responses[-1].id else "white"
             is_most_recent = '✅' if response.id == all_responses[-1].id else '❌'
             table.add_row(str(response.id), f'[{c}]{response.time_created}[/{c}]', is_most_recent) 
-        
         console.print(table)
-        
         
     def print_detailed(self, all_flights):
         console.print("\n[bold green]DetailedFlights[/bold green]!", "✈")
@@ -37,7 +36,6 @@ class TablePrinter:
         for flight in all_flights[::-1][:limit]:
             c = "white"
             table.add_row(f'[{c}]{flight.id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.identification}[/{c}]', f'[{c}]{flight.airline_name}[/{c}]',  f'[{c}]{flight.airplane_code}[/{c}]') 
-            
         console.print(table)
         
     def print_brief(self, all_flights):
@@ -58,5 +56,4 @@ class TablePrinter:
         for flight in all_flights[::-1][:limit]:
             c = "white"
             table.add_row(f'[{c}]{flight.id}[/{c}]', f'[{c}]{flight.flight_id}[/{c}]', f'[green]{flight.response_id}[/green]', f'[{c}]{flight.registration}[/{c}]', f'[{c}]{flight.lat}[/{c}]', f'[{c}]{flight.lon}[/{c}]',  f'[{c}]{flight.origin}[/{c}]',f'[{c}]{flight.destination}[/{c}]', f'[{c}]{flight.speed}[/{c}]',  f'[{c}]{flight.vertical_speed}[/{c}]') 
-            
         console.print(table)
