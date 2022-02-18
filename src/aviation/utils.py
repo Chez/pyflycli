@@ -8,7 +8,7 @@ console = Console()
 
 
 class TablePrinter:
-    def print_response(self, data):
+    def print_response(self, all_responses):
         console.print("\n[bold green]Responses[/bold green]!", "✈")
         table = Table(show_header=True, header_style="bold blue")
         table.add_column("id #", style="dim", width=6)
@@ -24,7 +24,7 @@ class TablePrinter:
         console.print(table)
         
         
-    def print_detailed(self, data):
+    def print_detailed(self, all_flights):
         console.print("\n[bold green]DetailedFlights[/bold green]!", "✈")
         table = Table(show_header=True, header_style="bold blue")
         table.add_column("id", style="dim", width=6)
@@ -40,7 +40,7 @@ class TablePrinter:
             
         console.print(table)
         
-    def print_brief(self, data):
+    def print_brief(self, all_flights):
         console.print("\n[bold green]BriefFlights[/bold green]!", "✈")
         table = Table(show_header=True, header_style="bold blue")
         table.add_column("id", style="dim", width=6)

@@ -38,7 +38,7 @@ def list_all_responses() -> None:
             "There are no Response in the DB yet", fg=typer.colors.RED
         )
         raise typer.Exit()
-    tp.print_response()
+    tp.print_response(all_responses)
   
 @app.command(name="detailed")
 def list_all_detailed() -> None:
@@ -50,8 +50,7 @@ def list_all_detailed() -> None:
             "There are no Flights in the DB yet", fg=typer.colors.RED
         )
         raise typer.Exit()    
-    tp.print_detailed()
-
+    tp.print_detailed(all_flights)
 
 @app.command(name="brief")
 def list_all_brief() -> None:
@@ -63,6 +62,7 @@ def list_all_brief() -> None:
             "There are no Flights in the DB yet", fg=typer.colors.RED
         )
         raise typer.Exit()    
-    tp.print_brief()
+    tp.print_brief(all_flights)
+
 
 
