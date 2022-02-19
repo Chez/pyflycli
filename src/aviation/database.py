@@ -116,9 +116,7 @@ class DummyAsyncDatabaseHandler:
         
     async def create_fake_data(self, response):
         session = self.get_async_session()
-        async with self.engine.begin() as conn:
-            await conn.run_sync(SQLModel.metadata.drop_all)
-            await conn.run_sync(SQLModel.metadata.create_all)
+        await self.create_tables()
         result = await self.crud.crud_create(session, response)
         await self.engine.dispose()
         return result
