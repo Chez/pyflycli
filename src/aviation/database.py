@@ -129,7 +129,7 @@ class DummyAsyncDatabaseHandler:
     
     async def create_tables(self):        
         async with self.engine.begin() as conn:
-            await conn.run_sync(SQLModel.metadata.drop_all)
+            # await conn.run_sync(SQLModel.metadata.drop_all) # UNCOMMENT TO CREATE FROM SCRATCH -- WILL DELETE EXISTING TABLES
             await conn.run_sync(SQLModel.metadata.create_all)
             
     async def parse_data(self):        
